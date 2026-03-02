@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SoAR 2026 — Abstract Review Manager</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8D5A3;
+    --navy: #1A2744;
+    --navy-light: #243360;
+    --cream: #FAF8F3;
+    --text: #1A1A1A;
+    --muted: #6B7280;
+    --border: #E5DDD0;
+    --success: #2D6A4F;
+    --accent: #8B3A3A;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--navy);
+    color: white;
+    padding: 2rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 3px solid var(--gold);
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    letter-spacing: 0.02em;
+  }
+
+  header p {
+    font-size: 0.85rem;
+    color: var(--gold-light);
+    margin-top: 0.3rem;
+    font-weight: 300;
+  }
+
+  .badge {
+    background: var(--gold);
+    color: var(--navy);
+    padding: 0.3rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  nav {
+    background: white;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 0;
+    padding: 0 3rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  nav button {
+    background: none;
+    border: none;
+    padding: 1rem 1.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+  }
+
+  nav button.active {
+    color: var(--navy);
+    border-bottom-color: var(--gold);
+  }
+
+  nav button:hover { color: var(--navy); }
+
+  main { padding: 2.5rem 3rem; max-width: 1400px; margin: 0 auto; }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Drop zones */
+  .drop-zone {
+    border: 2px dashed var(--border);
+    border-radius: 12px;
+    padding: 3rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: white;
+  }
+
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--gold);
+    background: #FFFBF0;
+  }
+
+  .drop-zone .icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .drop-zone h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--navy);
+  }
+
+  .drop-zone p { color: var(--muted); font-size: 0.9rem; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.4rem;
+    border-radius: 8px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .btn-primary { background: var(--navy); color: white; }
+  .btn-primary:hover { background: var(--navy-light); }
+  .btn-gold { background: var(--gold); color: var(--navy); font-weight: 600; }
+  .btn-gold:hover { background: #b8962e; }
+  .btn-outline { background: white; color: var(--navy); border: 1.5px solid var(--border); }
+  .btn-outline:hover { border-color: var(--navy); }
+  .btn-danger { background: var(--accent); color: white; }
+  .btn-success { background: var(--success); color: white; }
+
+  /* Cards */
+  .card {
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--navy);
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Abstract cards */
+  .abstract-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    transition: box-shadow 0.2s;
+  }
+
+  .abstract-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+
+  .abstract-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .abstract-num {
+    background: var(--navy);
+    color: var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .abstract-meta h4 {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--navy);
+    margin-bottom: 0.3rem;
+  }
+
+  .abstract-meta p {
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 0.2rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: 0.5rem;
+  }
+
+  .tag-oral { background: #DBEAFE; color: #1E40AF; }
+  .tag-poster { background: #D1FAE5; color: #065F46; }
+  .tag-rapid { background: #FEF3C7; color: #92400E; }
+  .tag-other { background: #F3F4F6; color: #374151; }
+
+  .abstract-body {
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: #374151;
+    max-height: 120px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .abstract-body.expanded { max-height: none; }
+
+  .abstract-body.collapsed::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: linear-gradient(transparent, white);
+  }
+
+  /* Stats grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .stat-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+    text-align: center;
+  }
+
+  .stat-card .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--navy);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .stat-card .label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 0.4rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Charts */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Email preview */
+  .email-preview {
+    background: #F9F9F9;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    font-size: 0.88rem;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    font-family: Georgia, serif;
+    max-height: 400px;
+    overflow-y: auto;
+  }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th { background: var(--navy); color: white; padding: 0.75rem 1rem; text-align: left; font-weight: 500; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  tr:hover td { background: #FAFAF8; }
+
+  .score-cell {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 32px;
+    font-weight: 600;
+    font-size: 0.85rem;
+  }
+
+  .score-high { background: #D1FAE5; color: #065F46; }
+  .score-mid { background: #FEF3C7; color: #92400E; }
+  .score-low { background: #FEE2E2; color: #991B1B; }
+
+  /* Form elements */
+  select, input[type="text"] {
+    padding: 0.55rem 0.9rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  select:focus, input[type="text"]:focus { border-color: var(--gold); }
+
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .toolbar h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--navy);
+    flex: 1;
+  }
+
+  /* Acceptance selector */
+  .acceptance-badge {
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .status-accepted { background: #D1FAE5; color: #065F46; }
+  .status-rejected { background: #FEE2E2; color: #991B1B; }
+  .status-pending { background: #F3F4F6; color: #6B7280; }
+  .status-waitlist { background: #FEF3C7; color: #92400E; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 700px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  .modal h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: var(--navy);
+    margin-bottom: 1.5rem;
+  }
+
+  .modal-footer {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  label { font-size: 0.85rem; font-weight: 500; color: var(--navy); display: block; margin-bottom: 0.4rem; }
+  
+  .form-group { margin-bottom: 1.2rem; }
+
+  textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  textarea:focus { border-color: var(--gold); }
+
+  .section-header {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    color: var(--navy);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .info-box {
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    font-size: 0.88rem;
+    color: #1E40AF;
+    margin-bottom: 1.5rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--muted);
+  }
+
+  .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .empty-state h3 { font-family: 'Playfair Display', serif; color: var(--navy); margin-bottom: 0.5rem; }
+
+  /* Print styles embedded */
+  #print-content { display: none; }
+
+  .ratings-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .rating-item {
+    background: var(--cream);
+    border-radius: 6px;
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 0.78rem;
+  }
+
+  .rating-item .r-label { color: var(--muted); margin-bottom: 0.2rem; }
+  .rating-item .r-val { font-weight: 700; color: var(--navy); font-size: 1rem; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    header, main, nav { padding-left: 1.5rem; padding-right: 1.5rem; }
+    .charts-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>SoAR 2026 — Abstract Review Manager</h1>
+    <p>Symposium on Aging Research · University of Waterloo</p>
+  </div>
+  <span class="badge">Review Portal</span>
+</header>
+
+<nav>
+  <button class="active" onclick="showTab('abstracts')">📄 Abstracts</button>
+  <button onclick="showTab('dashboard')">📊 Dashboard</button>
+  <button onclick="showTab('evaluations')">⭐ Evaluations</button>
+  <button onclick="showTab('email')">✉️ Email & Decisions</button>
+</nav>
+
+<main>
+  <!-- ABSTRACTS TAB -->
+  <div id="tab-abstracts" class="tab-content active">
+    <div class="info-box">
+      Upload the abstract submissions Excel/CSV file. The tool will automatically map columns and assign Abstract IDs.
+    </div>
+
+    <div class="drop-zone" id="abstract-drop" onclick="document.getElementById('abstract-file').click()">
+      <div class="icon">📂</div>
+      <h3>Drop Abstract Submissions File Here</h3>
+      <p>Accepts .xlsx or .csv — SoAR 2026 Abstract Submission Form</p>
+      <br>
+      <button class="btn btn-primary" onclick="event.stopPropagation()">Browse File</button>
+      <input type="file" id="abstract-file" accept=".xlsx,.csv,.xls" style="display:none" onchange="loadAbstracts(this.files[0])">
+    </div>
+
+    <div id="abstracts-loaded" style="display:none; margin-top:2rem;">
+      <div class="toolbar">
+        <h2>Submitted Abstracts</h2>
+        <select id="filter-type" onchange="renderAbstracts()">
+          <option value="">All Presentation Types</option>
+          <option value="oral">Standard Oral</option>
+          <option value="poster">Poster</option>
+          <option value="rapid">Rapid Fire</option>
+        </select>
+        <input type="text" id="search-abstract" placeholder="Search title or author..." oninput="renderAbstracts()" style="width:220px">
+        <button class="btn btn-gold" onclick="generateWordDoc()">⬇ Export Word Doc</button>
+      </div>
+      <div id="abstracts-list"></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD TAB -->
+  <div id="tab-dashboard" class="tab-content">
+    <div class="section-header">📊 Submission Overview</div>
+    
+    <div class="stats-grid" id="stats-grid">
+      <div class="stat-card"><div class="num" id="stat-total">—</div><div class="label">Total Submissions</div></div>
+      <div class="stat-card"><div class="num" id="stat-oral">—</div><div class="label">Oral Presentations</div></div>
+      <div class="stat-card"><div class="num" id="stat-poster">—</div><div class="label">Posters</div></div>
+      <div class="stat-card"><div class="num" id="stat-rapid">—</div><div class="label">Rapid Fire</div></div>
+      <div class="stat-card"><div class="num" id="stat-reviewed">—</div><div class="label">Reviewed</div></div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="card">
+        <h3>Presentation Type Requested</h3>
+        <canvas id="chart-types"></canvas>
+      </div>
+      <div class="card">
+        <h3>Reviewer vs. Submitter Preference</h3>
+        <canvas id="chart-match"></canvas>
+        <p id="chart-match-empty" style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem">Load evaluation data to see this chart</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Average Scores by Category</h3>
+      <canvas id="chart-scores" style="max-height:200px"></canvas>
+      <p id="chart-scores-empty" style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem">Load evaluation data to see scores</p>
+    </div>
+  </div>
+
+  <!-- EVALUATIONS TAB -->
+  <div id="tab-evaluations" class="tab-content">
+    <div class="info-box">
+      After the review session, download the evaluation Google Form responses as CSV and drop it here.
+    </div>
+
+    <div class="drop-zone" id="eval-drop" onclick="document.getElementById('eval-file').click()">
+      <div class="icon">⭐</div>
+      <h3>Drop Evaluation Responses File Here</h3>
+      <p>Accepts .xlsx or .csv — Reviewer evaluation form export</p>
+      <br>
+      <button class="btn btn-primary" onclick="event.stopPropagation()">Browse File</button>
+      <input type="file" id="eval-file" accept=".xlsx,.csv,.xls" style="display:none" onchange="loadEvaluations(this.files[0])">
+    </div>
+
+    <div id="evals-loaded" style="display:none; margin-top:2rem;">
+      <div class="toolbar">
+        <h2>Evaluation Results</h2>
+        <button class="btn btn-outline" onclick="exportEvalSummary()">⬇ Export Summary</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="eval-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Relevance</th>
+              <th>Method</th>
+              <th>Clarity</th>
+              <th>Results</th>
+              <th>Novelty</th>
+              <th>Avg Score</th>
+              <th>Reviews</th>
+              <th>Requested</th>
+              <th>Decision</th>
+            </tr>
+          </thead>
+          <tbody id="eval-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMAIL TAB -->
+  <div id="tab-email" class="tab-content">
+    <div class="section-header">✉️ Author Notifications</div>
+    
+    <div class="info-box">
+      Set decisions and customize the email template. Emails are generated per author with their personalized feedback.
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:2rem;">
+      <div class="card">
+        <h3>Email Template Settings</h3>
+        <div class="form-group">
+          <label>Conference Date</label>
+          <input type="text" id="conf-date" value="Tuesday April 29, 2025" style="width:100%">
+        </div>
+        <div class="form-group">
+          <label>Slide Submission Deadline</label>
+          <input type="text" id="slide-deadline" value="April 25, 2025" style="width:100%">
+        </div>
+        <div class="form-group">
+          <label>Registration Link</label>
+          <input type="text" id="reg-link" value="https://uwaterloo.ca1.qualtrics.com/jfe/form/SV_6zETBrnVsJ5qhbE" style="width:100%">
+        </div>
+        <div class="form-group">
+          <label>Sign-off Names</label>
+          <input type="text" id="signoff-names" value="Hana and Amy" style="width:100%">
+        </div>
+        <div class="form-group">
+          <label>Contact Email</label>
+          <input type="text" id="contact-email" value="soar@uwaterloo.ca" style="width:100%">
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Preview Email</h3>
+        <div style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <button class="btn btn-outline" onclick="previewEmail(0)">Preview First Abstract</button>
+        </div>
+        <div id="email-preview-box" class="email-preview" style="min-height:200px;font-size:0.82rem">
+          <span style="color:var(--muted)">Load abstracts and click "Preview" to see generated email.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>All Authors — Decisions & Email Generation</h3>
+      <div class="toolbar" style="margin-bottom:1rem;">
+        <select id="bulk-decision" style="width:200px">
+          <option value="">Bulk Set Decision...</option>
+          <option value="accepted">Accepted</option>
+          <option value="rejected">Rejected</option>
+          <option value="waitlist">Waitlist</option>
+        </select>
+        <button class="btn btn-outline" onclick="applyBulkDecision()">Apply to All</button>
+        <div style="flex:1"></div>
+        <button class="btn btn-gold" onclick="generateAllEmails()">⬇ Export All Emails (TXT)</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th><th>Author</th><th>Email</th><th>Title</th><th>Type Requested</th><th>Avg Score</th><th>Decision</th><th>Final Format</th><th>Preview</th>
+            </tr>
+          </thead>
+          <tbody id="email-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Email Preview Modal -->
+<div class="modal-overlay" id="email-modal">
+  <div class="modal">
+    <h3>📧 Email Preview</h3>
+    <div id="modal-email-content" class="email-preview" style="min-height:300px;"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Close</button>
+      <button class="btn btn-gold" onclick="copyEmailToClipboard()">📋 Copy Email</button>
+    </div>
+  </div>
+</div>
+
+<!-- Print Content (hidden) -->
+<div id="print-content"></div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let abstracts = [];
+let evaluations = [];
+let decisions = {}; // abstractId -> { status, finalFormat }
+let chartTypes = null, chartMatch = null, chartScores = null;
+
+// ============================================================
+// TAB NAVIGATION
+// ============================================================
+function showTab(name) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (name === 'dashboard') updateDashboard();
+  if (name === 'evaluations') renderEvalTable();
+  if (name === 'email') renderEmailTable();
+}
+
+// ============================================================
+// DRAG & DROP HELPERS
+// ============================================================
+function setupDrop(zoneId, handler) {
+  const zone = document.getElementById(zoneId);
+  zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
+  zone.addEventListener('drop', e => {
+    e.preventDefault();
+    zone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    if (file) handler(file);
+  });
+}
+setupDrop('abstract-drop', loadAbstracts);
+setupDrop('eval-drop', loadEvaluations);
+
+// ============================================================
+// LOAD ABSTRACTS
+// ============================================================
+function loadAbstracts(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const wb = XLSX.read(e.target.result, { type: 'array' });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+    
+    const headers = rows[0];
+    
+    abstracts = rows.slice(1).filter(r => r.some(c => c)).map((row, i) => {
+      // Map by position: 0=Timestamp,1=Name,2=Email,3=Affiliation,4=Level,5=Title,6=Supervisors,7=Abstract,8=PrefType,9=HowHeard
+      return {
+        id: 'A' + String(i + 1).padStart(3, '0'),
+        num: i + 1,
+        name: row[1] || '',
+        email: row[2] || '',
+        affiliation: row[3] || '',
+        level: row[4] || '',
+        title: row[5] || '',
+        supervisors: row[6] || '',
+        abstract: row[7] || '',
+        prefType: row[8] || '',
+        rawRow: row
+      };
+    });
+
+    // Init decisions
+    abstracts.forEach(a => {
+      if (!decisions[a.id]) decisions[a.id] = { status: 'pending', finalFormat: a.prefType };
+    });
+
+    document.getElementById('abstract-drop').style.display = 'none';
+    document.getElementById('abstracts-loaded').style.display = 'block';
+    renderAbstracts();
+    updateStats();
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function getTypeTag(type) {
+  if (!type) return '<span class="tag tag-other">—</span>';
+  const t = type.toLowerCase();
+  if (t.includes('oral') || t.includes('standard')) return `<span class="tag tag-oral">Oral</span>`;
+  if (t.includes('poster')) return `<span class="tag tag-poster">Poster</span>`;
+  if (t.includes('rapid')) return `<span class="tag tag-rapid">Rapid Fire</span>`;
+  return `<span class="tag tag-other">${type}</span>`;
+}
+
+function renderAbstracts() {
+  const filter = document.getElementById('filter-type').value.toLowerCase();
+  const search = document.getElementById('search-abstract').value.toLowerCase();
+  
+  const filtered = abstracts.filter(a => {
+    const typeMatch = !filter || (a.prefType || '').toLowerCase().includes(filter);
+    const searchMatch = !search || a.title.toLowerCase().includes(search) || a.name.toLowerCase().includes(search);
+    return typeMatch && searchMatch;
+  });
+
+  const container = document.getElementById('abstracts-list');
+  if (filtered.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><h3>No abstracts found</h3><p>Try adjusting your filters.</p></div>';
+    return;
+  }
+
+  container.innerHTML = filtered.map(a => `
+    <div class="abstract-card">
+      <div class="abstract-header">
+        <div class="abstract-num">${a.num}</div>
+        <div class="abstract-meta" style="flex:1">
+          <h4>${a.title || '(No title)'} ${getTypeTag(a.prefType)}</h4>
+          <p>${a.name} &nbsp;·&nbsp; ${a.affiliation} &nbsp;·&nbsp; ${a.level}</p>
+          ${a.supervisors ? `<p style="margin-top:0.2rem;font-size:0.82rem">Supervisors/Co-authors: ${a.supervisors}</p>` : ''}
+        </div>
+        <div style="font-size:0.8rem;color:var(--muted);text-align:right">
+          <div style="font-weight:600;color:var(--navy)">${a.id}</div>
+          <div>${a.email}</div>
+        </div>
+      </div>
+      <div class="abstract-body collapsed" id="body-${a.id}">
+        ${(a.abstract || '').replace(/\n/g, '<br>')}
+      </div>
+      <div style="margin-top:0.75rem;display:flex;gap:0.75rem;">
+        <button class="btn btn-outline" style="font-size:0.8rem;padding:0.4rem 0.9rem" onclick="toggleAbstract('${a.id}')">Show More</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleAbstract(id) {
+  const el = document.getElementById('body-' + id);
+  const btn = el.nextElementSibling.querySelector('button');
+  if (el.classList.contains('collapsed')) {
+    el.classList.remove('collapsed');
+    el.classList.add('expanded');
+    btn.textContent = 'Show Less';
+  } else {
+    el.classList.add('collapsed');
+    el.classList.remove('expanded');
+    btn.textContent = 'Show More';
+  }
+}
+
+// ============================================================
+// WORD DOC EXPORT
+// ============================================================
+function generateWordDoc() {
+  if (abstracts.length === 0) { alert('No abstracts loaded.'); return; }
+
+  // Build HTML that Word can open
+  let body = `
+    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
+    <head>
+    <meta charset="UTF-8">
+    <style>
+      body { font-family: 'Calibri', sans-serif; font-size: 11pt; margin: 2cm; }
+      h1 { font-family: 'Georgia', serif; color: #1A2744; font-size: 18pt; text-align: center; margin-bottom: 6pt; }
+      h2 { font-family: 'Georgia', serif; color: #1A2744; font-size: 13pt; margin-top: 24pt; margin-bottom: 4pt; border-bottom: 1pt solid #C9A84C; padding-bottom: 3pt; }
+      .meta { font-size: 10pt; color: #555; margin-bottom: 8pt; }
+      .abstract-text { font-size: 10.5pt; line-height: 1.6; margin-top: 8pt; }
+      .label { font-weight: bold; color: #1A2744; }
+      .page-break { page-break-after: always; }
+      .header-block { text-align:center; margin-bottom:20pt; border-bottom: 2pt solid #1A2744; padding-bottom:10pt; }
+      .rating-box { margin-top:16pt; border: 1pt solid #CCC; padding: 8pt; }
+      .rating-grid { display:table; width:100%; }
+      .rating-cell { display:table-cell; width:20%; padding:4pt; border:0.5pt solid #DDD; text-align:center; font-size:9pt; }
+      .rating-label { font-size:8pt; color:#777; }
+      .rating-line { height:30pt; border-bottom:0.5pt solid #CCC; }
+    </style>
+    </head>
+    <body>
+    <div class="header-block">
+      <h1>SoAR 2026 — Abstract Review Package</h1>
+      <p style="color:#555;font-size:10pt">Symposium on Aging Research · University of Waterloo<br>Confidential — For Review Purposes Only</p>
+    </div>`;
+
+  abstracts.forEach((a, idx) => {
+    body += `
+    <div ${idx < abstracts.length - 1 ? 'class="page-break"' : ''}>
+      <h2>${a.id}: ${a.title || '(Untitled)'}</h2>
+      <div class="meta">
+        <span class="label">Presenter:</span> ${a.name}<br>
+        <span class="label">Affiliation:</span> ${a.affiliation}<br>
+        <span class="label">Level of Study:</span> ${a.level}<br>
+        ${a.supervisors ? `<span class="label">Supervisors/Co-Authors:</span> ${a.supervisors}<br>` : ''}
+        <span class="label">Preferred Presentation Type:</span> ${a.prefType || '—'}
+      </div>
+      <div class="abstract-text">${(a.abstract || '').replace(/\n/g, '<br>')}</div>
+      
+      <div class="rating-box">
+        <p style="font-size:9pt;font-weight:bold;margin-bottom:6pt;color:#1A2744">REVIEWER SCORING (1–5 scale)</p>
+        <div class="rating-grid">
+          <div class="rating-cell"><div class="rating-label">Relevance</div><div class="rating-line"></div></div>
+          <div class="rating-cell"><div class="rating-label">Methodology</div><div class="rating-line"></div></div>
+          <div class="rating-cell"><div class="rating-label">Clarity</div><div class="rating-line"></div></div>
+          <div class="rating-cell"><div class="rating-label">Results</div><div class="rating-line"></div></div>
+          <div class="rating-cell"><div class="rating-label">Novelty</div><div class="rating-line"></div></div>
+        </div>
+        <p style="font-size:9pt;margin-top:8pt"><span class="label">Preferred format suggestion:</span> ___________________________</p>
+        <p style="font-size:9pt;margin-top:6pt"><span class="label">Strengths:</span></p>
+        <div style="height:40pt;border-bottom:0.5pt solid #CCC;"></div>
+        <p style="font-size:9pt;margin-top:8pt"><span class="label">Areas for Improvement:</span></p>
+        <div style="height:40pt;border-bottom:0.5pt solid #CCC;"></div>
+      </div>
+    </div>`;
+  });
+
+  body += `</body></html>`;
+
+  const blob = new Blob([body], { type: 'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'SoAR_2026_Abstract_Review_Package.doc';
+  a.click();
+}
+
+// ============================================================
+// LOAD EVALUATIONS
+// ============================================================
+function loadEvaluations(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    const wb = XLSX.read(e.target.result, { type: 'array' });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
+    
+    const dataRows = rows.slice(1).filter(r => r.some(c => c));
+    
+    // Expected columns: Timestamp(0), AbstractID(1), Relevance(2), Methodology(3), Clarity(4), Results(5), Novelty(6), Strengths(7), Improvements(8), PrefFormat(9)
+    evaluations = dataRows.map(row => ({
+      abstractId: String(row[1] || '').trim(),
+      relevance: parseFloat(row[2]) || 0,
+      methodology: parseFloat(row[3]) || 0,
+      clarity: parseFloat(row[4]) || 0,
+      results: parseFloat(row[5]) || 0,
+      novelty: parseFloat(row[6]) || 0,
+      strengths: row[7] || '',
+      improvements: row[8] || '',
+      prefFormat: row[9] || ''
+    }));
+
+    document.getElementById('eval-drop').style.display = 'none';
+    document.getElementById('evals-loaded').style.display = 'block';
+    renderEvalTable();
+    updateDashboard();
+    renderEmailTable();
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function getEvalForAbstract(id) {
+  const evals = evaluations.filter(e => e.abstractId === id);
+  if (evals.length === 0) return null;
+  const avg = field => evals.reduce((s, e) => s + e[field], 0) / evals.length;
+  return {
+    count: evals.length,
+    relevance: avg('relevance'),
+    methodology: avg('methodology'),
+    clarity: avg('clarity'),
+    results: avg('results'),
+    novelty: avg('novelty'),
+    avgScore: (avg('relevance') + avg('methodology') + avg('clarity') + avg('results') + avg('novelty')) / 5,
+    strengths: evals.map(e => e.strengths).filter(Boolean),
+    improvements: evals.map(e => e.improvements).filter(Boolean),
+    prefFormats: evals.map(e => e.prefFormat).filter(Boolean)
+  };
+}
+
+function scoreCell(val) {
+  if (!val) return '<span style="color:var(--muted)">—</span>';
+  const v = parseFloat(val).toFixed(1);
+  const cls = val >= 4 ? 'score-high' : val >= 3 ? 'score-mid' : 'score-low';
+  return `<span class="score-cell ${cls}">${v}</span>`;
+}
+
+function renderEvalTable() {
+  const tbody = document.getElementById('eval-tbody');
+  if (abstracts.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;color:var(--muted);padding:2rem">Load abstract submissions first.</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = abstracts.map(a => {
+    const ev = getEvalForAbstract(a.id);
+    const dec = decisions[a.id] || {};
+    return `
+      <tr>
+        <td><strong>${a.id}</strong></td>
+        <td style="max-width:200px;font-size:0.82rem">${a.title}</td>
+        <td>${a.name}</td>
+        <td>${ev ? scoreCell(ev.relevance) : '—'}</td>
+        <td>${ev ? scoreCell(ev.methodology) : '—'}</td>
+        <td>${ev ? scoreCell(ev.clarity) : '—'}</td>
+        <td>${ev ? scoreCell(ev.results) : '—'}</td>
+        <td>${ev ? scoreCell(ev.novelty) : '—'}</td>
+        <td>${ev ? `<strong>${ev.avgScore.toFixed(2)}</strong>` : '—'}</td>
+        <td>${ev ? ev.count : 0}</td>
+        <td>${getTypeTag(a.prefType)}</td>
+        <td>
+          <select onchange="setDecision('${a.id}', 'status', this.value)" style="font-size:0.8rem;padding:0.3rem 0.5rem;border-radius:6px;">
+            <option value="pending" ${dec.status === 'pending' ? 'selected' : ''}>Pending</option>
+            <option value="accepted" ${dec.status === 'accepted' ? 'selected' : ''}>Accept</option>
+            <option value="rejected" ${dec.status === 'rejected' ? 'selected' : ''}>Reject</option>
+            <option value="waitlist" ${dec.status === 'waitlist' ? 'selected' : ''}>Waitlist</option>
+          </select>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+function updateStats() {
+  const total = abstracts.length;
+  const oral = abstracts.filter(a => (a.prefType || '').toLowerCase().includes('oral') || (a.prefType || '').toLowerCase().includes('standard')).length;
+  const poster = abstracts.filter(a => (a.prefType || '').toLowerCase().includes('poster')).length;
+  const rapid = abstracts.filter(a => (a.prefType || '').toLowerCase().includes('rapid')).length;
+  const reviewed = abstracts.filter(a => getEvalForAbstract(a.id)).length;
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-oral').textContent = oral;
+  document.getElementById('stat-poster').textContent = poster;
+  document.getElementById('stat-rapid').textContent = rapid;
+  document.getElementById('stat-reviewed').textContent = reviewed;
+}
+
+function updateDashboard() {
+  updateStats();
+  
+  // Chart 1: Type distribution
+  const typeCounts = { Oral: 0, Poster: 0, 'Rapid Fire': 0, Other: 0 };
+  abstracts.forEach(a => {
+    const t = (a.prefType || '').toLowerCase();
+    if (t.includes('oral') || t.includes('standard')) typeCounts.Oral++;
+    else if (t.includes('poster')) typeCounts.Poster++;
+    else if (t.includes('rapid')) typeCounts['Rapid Fire']++;
+    else typeCounts.Other++;
+  });
+
+  if (chartTypes) chartTypes.destroy();
+  const ctx1 = document.getElementById('chart-types').getContext('2d');
+  chartTypes = new Chart(ctx1, {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(typeCounts),
+      datasets: [{ data: Object.values(typeCounts), backgroundColor: ['#1A2744', '#C9A84C', '#2D6A4F', '#8B3A3A'] }]
+    },
+    options: { plugins: { legend: { position: 'bottom' } } }
+  });
+
+  // Chart 2: Submitter vs reviewer preference (if eval data)
+  if (evaluations.length > 0) {
+    document.getElementById('chart-match').style.display = 'block';
+    document.getElementById('chart-match-empty').style.display = 'none';
+    
+    let match = 0, mismatch = 0;
+    abstracts.forEach(a => {
+      const ev = getEvalForAbstract(a.id);
+      if (ev && ev.prefFormats.length > 0) {
+        const submitterType = (a.prefType || '').toLowerCase();
+        const reviewerType = (ev.prefFormats[0] || '').toLowerCase();
+        if (submitterType.slice(0, 4) === reviewerType.slice(0, 4)) match++;
+        else mismatch++;
+      }
+    });
+
+    if (chartMatch) chartMatch.destroy();
+    const ctx2 = document.getElementById('chart-match').getContext('2d');
+    chartMatch = new Chart(ctx2, {
+      type: 'pie',
+      data: {
+        labels: ['Agreement', 'Disagreement'],
+        datasets: [{ data: [match, mismatch], backgroundColor: ['#2D6A4F', '#C9A84C'] }]
+      },
+      options: { plugins: { legend: { position: 'bottom' } } }
+    });
+
+    // Chart 3: avg scores
+    document.getElementById('chart-scores-empty').style.display = 'none';
+    const cats = ['relevance', 'methodology', 'clarity', 'results', 'novelty'];
+    const avgs = cats.map(c => {
+      const vals = evaluations.map(e => e[c]).filter(v => v > 0);
+      return vals.length ? vals.reduce((a, b) => a + b) / vals.length : 0;
+    });
+
+    if (chartScores) chartScores.destroy();
+    const ctx3 = document.getElementById('chart-scores').getContext('2d');
+    chartScores = new Chart(ctx3, {
+      type: 'bar',
+      data: {
+        labels: ['Relevance', 'Methodology', 'Clarity', 'Results', 'Novelty'],
+        datasets: [{ label: 'Average Score', data: avgs, backgroundColor: '#1A2744' }]
+      },
+      options: { scales: { y: { min: 0, max: 5 } }, plugins: { legend: { display: false } } }
+    });
+  }
+}
+
+// ============================================================
+// DECISIONS
+// ============================================================
+function setDecision(id, field, value) {
+  if (!decisions[id]) decisions[id] = { status: 'pending', finalFormat: '' };
+  decisions[id][field] = value;
+  renderEmailTable();
+}
+
+function applyBulkDecision() {
+  const val = document.getElementById('bulk-decision').value;
+  if (!val) return;
+  abstracts.forEach(a => {
+    if (!decisions[a.id]) decisions[a.id] = { status: 'pending', finalFormat: a.prefType };
+    decisions[a.id].status = val;
+  });
+  renderEvalTable();
+  renderEmailTable();
+}
+
+// ============================================================
+// EMAIL TABLE
+// ============================================================
+function renderEmailTable() {
+  const tbody = document.getElementById('email-tbody');
+  if (abstracts.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:2rem">Load abstract submissions to manage emails.</td></tr>';
+    return;
+  }
+
+  const formats = ['Standard Oral Presentation', 'Rapid Fire Presentation', 'Poster Presentation', 'Workshop'];
+  
+  tbody.innerHTML = abstracts.map(a => {
+    const ev = getEvalForAbstract(a.id);
+    const dec = decisions[a.id] || { status: 'pending', finalFormat: a.prefType };
+    const statusColors = { accepted: 'status-accepted', rejected: 'status-rejected', pending: 'status-pending', waitlist: 'status-waitlist' };
+    return `
+      <tr>
+        <td><strong>${a.id}</strong></td>
+        <td>${a.name}</td>
+        <td style="font-size:0.8rem">${a.email}</td>
+        <td style="font-size:0.82rem;max-width:160px">${a.title}</td>
+        <td>${getTypeTag(a.prefType)}</td>
+        <td>${ev ? ev.avgScore.toFixed(2) : '—'}</td>
+        <td>
+          <select onchange="setDecision('${a.id}', 'status', this.value)" style="font-size:0.8rem;padding:0.3rem;border-radius:6px">
+            <option value="pending" ${dec.status === 'pending' ? 'selected' : ''}>Pending</option>
+            <option value="accepted" ${dec.status === 'accepted' ? 'selected' : ''}>Accept</option>
+            <option value="rejected" ${dec.status === 'rejected' ? 'selected' : ''}>Reject</option>
+            <option value="waitlist" ${dec.status === 'waitlist' ? 'selected' : ''}>Waitlist</option>
+          </select>
+        </td>
+        <td>
+          <select onchange="setDecision('${a.id}', 'finalFormat', this.value)" style="font-size:0.8rem;padding:0.3rem;border-radius:6px">
+            ${formats.map(f => `<option value="${f}" ${dec.finalFormat === f ? 'selected' : ''}>${f}</option>`).join('')}
+          </select>
+        </td>
+        <td>
+          <button class="btn btn-outline" style="font-size:0.78rem;padding:0.35rem 0.7rem" onclick="previewEmail(${a.num - 1})">Preview</button>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+// ============================================================
+// EMAIL GENERATION
+// ============================================================
+function buildEmail(abstract) {
+  const dec = decisions[abstract.id] || { status: 'pending', finalFormat: abstract.prefType || 'Presentation' };
+  const ev = getEvalForAbstract(abstract.id);
+  const confDate = document.getElementById('conf-date')?.value || 'Tuesday April 29, 2025';
+  const slideDeadline = document.getElementById('slide-deadline')?.value || 'April 25, 2025';
+  const regLink = document.getElementById('reg-link')?.value || 'https://uwaterloo.ca1.qualtrics.com/jfe/form/SV_6zETBrnVsJ5qhbE';
+  const signoff = document.getElementById('signoff-names')?.value || 'Hana and Amy';
+  const contactEmail = document.getElementById('contact-email')?.value || 'soar@uwaterloo.ca';
+  
+  const firstName = abstract.name.split(' ')[0];
+  const isAccepted = dec.status === 'accepted';
+  const isRejected = dec.status === 'rejected';
+  const isWaitlist = dec.status === 'waitlist';
+  
+  let subject, statusLine;
+  if (isAccepted) {
+    subject = `SoAR 2026 — Abstract Acceptance: ${abstract.title}`;
+    statusLine = `ABSTRACT ACCEPTANCE\nWe are pleased to notify you that your abstract was accepted as a ${dec.finalFormat} for SoAR 2026.`;
+  } else if (isRejected) {
+    subject = `SoAR 2026 — Abstract Decision: ${abstract.title}`;
+    statusLine = `ABSTRACT DECISION\nThank you for your submission to SoAR 2026. After careful review, we regret to inform you that we are unable to include your abstract in this year's program. We encourage you to stay connected with SoAR for future opportunities.`;
+  } else if (isWaitlist) {
+    subject = `SoAR 2026 — Abstract Waitlist: ${abstract.title}`;
+    statusLine = `ABSTRACT WAITLIST\nYour abstract has been placed on the waitlist for SoAR 2026. We will notify you of any changes to your status as soon as possible.`;
+  } else {
+    subject = `SoAR 2026 — Abstract Review Update: ${abstract.title}`;
+    statusLine = `ABSTRACT STATUS — PENDING\nYour abstract is currently under review. You will receive a final notification soon.`;
+  }
+
+  let feedbackSection = '';
+  if (ev && (ev.strengths.length > 0 || ev.improvements.length > 0)) {
+    feedbackSection = `\n\nFEEDBACK\nYour abstract was blind-reviewed by an interdisciplinary panel of UW peers who provided the following feedback:\n\n`;
+    if (ev.strengths.length > 0) {
+      feedbackSection += `Strengths:\n${ev.strengths.map((s, i) => `Reviewer ${i + 1}: ${s}`).join('\n')}\n\n`;
+    }
+    if (ev.improvements.length > 0) {
+      feedbackSection += `Areas for Improvement:\n${ev.improvements.map((s, i) => `Reviewer ${i + 1}: ${s}`).join('\n')}`;
+    }
+  }
+
+  const nextSteps = isAccepted ? `\n\nSCHEDULE & NEXT STEPS\nSoAR will be held in-person on ${confDate}. We will reach out mid-April with information regarding your scheduling. We ask that you submit your PowerPoint slides (or other electronic visual aids) no later than ${slideDeadline} to ${contactEmail}. You may also reply to this email.\n\nALL PRESENTERS MUST REGISTER FOR SOAR. Please see the link below:\n${regLink}\n\nCongratulations and we look forward to seeing you at SoAR!` : '';
+
+  return {
+    subject,
+    body: `Dear ${firstName},
+
+${statusLine}
+${feedbackSection}
+${isAccepted || isWaitlist ? `\nYou are responsible for notifying the SoAR planning team (${contactEmail}) if you are unable to deliver your presentation as specified above. Otherwise, we will assume you accept your responsibilities as a presenter.` : ''}
+${nextSteps}
+
+Sincerely,
+
+${signoff}
+SoAR Programming
+
+The SoAR planning team | ${contactEmail}
+Symposium on Aging Research (SoAR): An interdisciplinary forum on aging research
+University of Waterloo | 200 University Avenue West | Waterloo, ON, Canada N2L 3G1`
+  };
+}
+
+function previewEmail(idx) {
+  if (abstracts.length === 0) return;
+  const a = abstracts[Math.min(idx, abstracts.length - 1)];
+  const email = buildEmail(a);
+  
+  document.getElementById('email-preview-box').textContent = email.body;
+  
+  document.getElementById('email-modal').classList.add('open');
+  document.getElementById('modal-email-content').textContent = `TO: ${a.email}\nSUBJECT: ${email.subject}\n\n${email.body}`;
+}
+
+function closeModal() {
+  document.getElementById('email-modal').classList.remove('open');
+}
+
+function copyEmailToClipboard() {
+  const content = document.getElementById('modal-email-content').textContent;
+  navigator.clipboard.writeText(content).then(() => alert('Email copied to clipboard!'));
+}
+
+function generateAllEmails() {
+  if (abstracts.length === 0) { alert('No abstracts loaded.'); return; }
+  
+  let output = '';
+  abstracts.forEach(a => {
+    const email = buildEmail(a);
+    output += `${'='.repeat(70)}\nTO: ${a.email}\nSUBJECT: ${email.subject}\n${'='.repeat(70)}\n${email.body}\n\n\n`;
+  });
+
+  const blob = new Blob([output], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'SoAR_2026_Author_Emails.txt';
+  link.click();
+}
+
+function exportEvalSummary() {
+  if (abstracts.length === 0) { alert('No abstracts loaded.'); return; }
+  
+  const rows = [['Abstract ID', 'Title', 'Author', 'Email', 'Requested Format', 'Avg Relevance', 'Avg Methodology', 'Avg Clarity', 'Avg Results', 'Avg Novelty', 'Overall Avg', 'Decision', 'Final Format']];
+  
+  abstracts.forEach(a => {
+    const ev = getEvalForAbstract(a.id);
+    const dec = decisions[a.id] || {};
+    rows.push([
+      a.id, a.title, a.name, a.email, a.prefType,
+      ev ? ev.relevance.toFixed(2) : '',
+      ev ? ev.methodology.toFixed(2) : '',
+      ev ? ev.clarity.toFixed(2) : '',
+      ev ? ev.results.toFixed(2) : '',
+      ev ? ev.novelty.toFixed(2) : '',
+      ev ? ev.avgScore.toFixed(2) : '',
+      dec.status || 'pending',
+      dec.finalFormat || a.prefType
+    ]);
+  });
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  XLSX.utils.book_append_sheet(wb, ws, 'Evaluation Summary');
+  XLSX.writeFile(wb, 'SoAR_2026_Evaluation_Summary.xlsx');
+}
+
+// Close modal on overlay click
+document.getElementById('email-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+</script>
+</body>
+</html>
