@@ -849,31 +849,26 @@ function toggleAbstract(id) {
 function generateWordDoc() {
   if (abstracts.length === 0) { alert('No abstracts loaded.'); return; }
 
-  // Build HTML that Word can open
   let body = `
     <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
     <head>
     <meta charset="UTF-8">
     <style>
-      body { font-family: 'Calibri', sans-serif; font-size: 11pt; margin: 2cm; }
-      h1 { font-family: 'Georgia', serif; color: #1A2744; font-size: 18pt; text-align: center; margin-bottom: 6pt; }
-      h2 { font-family: 'Georgia', serif; color: #1A2744; font-size: 13pt; margin-top: 24pt; margin-bottom: 4pt; border-bottom: 1pt solid #C9A84C; padding-bottom: 3pt; }
-      .meta { font-size: 10pt; color: #555; margin-bottom: 8pt; }
-      .abstract-text { font-size: 10.5pt; line-height: 1.6; margin-top: 8pt; }
+      @page { margin: 1.27cm 1.27cm 1.27cm 1.27cm; }
+      body { font-family: 'Calibri', sans-serif; font-size: 11pt; margin: 0; }
+      h1 { font-family: 'Georgia', serif; color: #1A2744; font-size: 16pt; text-align: center; margin-bottom: 4pt; }
+      h2 { font-family: 'Georgia', serif; color: #1A2744; font-size: 12pt; margin-top: 0; margin-bottom: 5pt; border-bottom: 1pt solid #C9A84C; padding-bottom: 3pt; }
+      .meta { font-size: 10pt; color: #333; margin-bottom: 8pt; line-height: 1.5; }
+      .abstract-text { font-size: 10.5pt; line-height: 1.5; margin-top: 6pt; }
       .label { font-weight: bold; color: #1A2744; }
       .page-break { page-break-after: always; }
-      .header-block { text-align:center; margin-bottom:20pt; border-bottom: 2pt solid #1A2744; padding-bottom:10pt; }
-      .rating-box { margin-top:16pt; border: 1pt solid #CCC; padding: 8pt; }
-      .rating-grid { display:table; width:100%; }
-      .rating-cell { display:table-cell; width:20%; padding:4pt; border:0.5pt solid #DDD; text-align:center; font-size:9pt; }
-      .rating-label { font-size:8pt; color:#777; }
-      .rating-line { height:30pt; border-bottom:0.5pt solid #CCC; }
+      .header-block { text-align: center; margin-bottom: 16pt; border-bottom: 2pt solid #1A2744; padding-bottom: 8pt; }
     </style>
     </head>
     <body>
     <div class="header-block">
-      <h1>SoAR 2026 — Abstract Review Package</h1>
-      <p style="color:#555;font-size:10pt">Symposium on Aging Research · University of Waterloo<br>Confidential — For Review Purposes Only</p>
+      <h1>SoAR 2026 — Abstract Submissions</h1>
+      <p style="color:#555; font-size:10pt">Symposium on Aging Research · University of Waterloo</p>
     </div>`;
 
   abstracts.forEach((a, idx) => {
@@ -888,22 +883,6 @@ function generateWordDoc() {
         <span class="label">Preferred Presentation Type:</span> ${a.prefType || '—'}
       </div>
       <div class="abstract-text">${(a.abstract || '').replace(/\n/g, '<br>')}</div>
-      
-      <div class="rating-box">
-        <p style="font-size:9pt;font-weight:bold;margin-bottom:6pt;color:#1A2744">REVIEWER SCORING (1–5 scale)</p>
-        <div class="rating-grid">
-          <div class="rating-cell"><div class="rating-label">Relevance</div><div class="rating-line"></div></div>
-          <div class="rating-cell"><div class="rating-label">Methodology</div><div class="rating-line"></div></div>
-          <div class="rating-cell"><div class="rating-label">Clarity</div><div class="rating-line"></div></div>
-          <div class="rating-cell"><div class="rating-label">Results</div><div class="rating-line"></div></div>
-          <div class="rating-cell"><div class="rating-label">Novelty</div><div class="rating-line"></div></div>
-        </div>
-        <p style="font-size:9pt;margin-top:8pt"><span class="label">Preferred format suggestion:</span> ___________________________</p>
-        <p style="font-size:9pt;margin-top:6pt"><span class="label">Strengths:</span></p>
-        <div style="height:40pt;border-bottom:0.5pt solid #CCC;"></div>
-        <p style="font-size:9pt;margin-top:8pt"><span class="label">Areas for Improvement:</span></p>
-        <div style="height:40pt;border-bottom:0.5pt solid #CCC;"></div>
-      </div>
     </div>`;
   });
 
@@ -913,7 +892,7 @@ function generateWordDoc() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = 'SoAR_2026_Abstract_Review_Package.doc';
+  a.download = 'SoAR_2026_Abstract_Submissions.doc';
   a.click();
 }
 
