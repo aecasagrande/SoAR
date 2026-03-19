@@ -8,7 +8,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
-
   :root {
     --gold: #C9A84C;
     --gold-light: #E8D5A3;
@@ -21,130 +20,25 @@
     --success: #2D6A4F;
     --accent: #8B3A3A;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream);
-    color: var(--text);
-    min-height: 100vh;
-  }
-
-  header {
-    background: var(--navy);
-    color: white;
-    padding: 2rem 3rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 3px solid var(--gold);
-  }
-
-  header h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.8rem;
-    letter-spacing: 0.02em;
-  }
-
-  header p {
-    font-size: 0.85rem;
-    color: var(--gold-light);
-    margin-top: 0.3rem;
-    font-weight: 300;
-  }
-
-  .badge {
-    background: var(--gold);
-    color: var(--navy);
-    padding: 0.3rem 0.9rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  nav {
-    background: white;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    gap: 0;
-    padding: 0 3rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  }
-
-  nav button {
-    background: none;
-    border: none;
-    padding: 1rem 1.5rem;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--muted);
-    cursor: pointer;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
-  }
-
-  nav button.active {
-    color: var(--navy);
-    border-bottom-color: var(--gold);
-  }
-
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+  header { background: var(--navy); color: white; padding: 2rem 3rem; display: flex; align-items: center; justify-content: space-between; border-bottom: 3px solid var(--gold); }
+  header h1 { font-family: 'Playfair Display', serif; font-size: 1.8rem; letter-spacing: 0.02em; }
+  header p { font-size: 0.85rem; color: var(--gold-light); margin-top: 0.3rem; font-weight: 300; }
+  .badge { background: var(--gold); color: var(--navy); padding: 0.3rem 0.9rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+  nav { background: white; border-bottom: 1px solid var(--border); display: flex; gap: 0; padding: 0 3rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+  nav button { background: none; border: none; padding: 1rem 1.5rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; }
+  nav button.active { color: var(--navy); border-bottom-color: var(--gold); }
   nav button:hover { color: var(--navy); }
-
   main { padding: 2.5rem 3rem; max-width: 1400px; margin: 0 auto; }
-
   .tab-content { display: none; }
   .tab-content.active { display: block; }
-
-  /* Drop zones */
-  .drop-zone {
-    border: 2px dashed var(--border);
-    border-radius: 12px;
-    padding: 3rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s;
-    background: white;
-  }
-
-  .drop-zone:hover, .drop-zone.drag-over {
-    border-color: var(--gold);
-    background: #FFFBF0;
-  }
-
-  .drop-zone .icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-  }
-
-  .drop-zone h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-    color: var(--navy);
-  }
-
+  .drop-zone { border: 2px dashed var(--border); border-radius: 12px; padding: 3rem; text-align: center; cursor: pointer; transition: all 0.3s; background: white; }
+  .drop-zone:hover, .drop-zone.drag-over { border-color: var(--gold); background: #FFFBF0; }
+  .drop-zone .icon { font-size: 3rem; margin-bottom: 1rem; }
+  .drop-zone h3 { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--navy); }
   .drop-zone p { color: var(--muted); font-size: 0.9rem; }
-
-  /* Buttons */
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.65rem 1.4rem;
-    border-radius: 8px;
-    border: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-decoration: none;
-  }
-
+  .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1.4rem; border-radius: 8px; border: none; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s; text-decoration: none; }
   .btn-primary { background: var(--navy); color: white; }
   .btn-primary:hover { background: var(--navy-light); }
   .btn-gold { background: var(--gold); color: var(--navy); font-weight: 600; }
@@ -153,344 +47,170 @@
   .btn-outline:hover { border-color: var(--navy); }
   .btn-danger { background: var(--accent); color: white; }
   .btn-success { background: var(--success); color: white; }
-
-  /* Cards */
-  .card {
-    background: white;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  }
-
-  .card h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
-    color: var(--navy);
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid var(--border);
-  }
-
-  /* Abstract cards */
-  .abstract-card {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-    transition: box-shadow 0.2s;
-  }
-
+  .card { background: white; border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+  .card h3 { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--navy); margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border); }
+  .abstract-card { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 1.5rem; margin-bottom: 1rem; transition: box-shadow 0.2s; }
   .abstract-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
-
-  .abstract-header {
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .abstract-num {
-    background: var(--navy);
-    color: var(--gold);
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
-    font-weight: 700;
-    width: 48px;
-    height: 48px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .abstract-meta h4 {
-    font-weight: 600;
-    font-size: 1rem;
-    color: var(--navy);
-    margin-bottom: 0.3rem;
-  }
-
-  .abstract-meta p {
-    font-size: 0.85rem;
-    color: var(--muted);
-  }
-
-  .tag {
-    display: inline-block;
-    padding: 0.2rem 0.7rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin-left: 0.5rem;
-  }
-
+  .abstract-header { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem; }
+  .abstract-num { background: var(--navy); color: var(--gold); font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .abstract-meta h4 { font-weight: 600; font-size: 1rem; color: var(--navy); margin-bottom: 0.3rem; }
+  .abstract-meta p { font-size: 0.85rem; color: var(--muted); }
+  .tag { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-left: 0.5rem; }
   .tag-oral { background: #DBEAFE; color: #1E40AF; }
   .tag-poster { background: #D1FAE5; color: #065F46; }
   .tag-rapid { background: #FEF3C7; color: #92400E; }
   .tag-other { background: #F3F4F6; color: #374151; }
-
-  .abstract-body {
-    font-size: 0.88rem;
-    line-height: 1.7;
-    color: #374151;
-    max-height: 120px;
-    overflow: hidden;
-    position: relative;
-  }
-
+  .abstract-body { font-size: 0.88rem; line-height: 1.7; color: #374151; max-height: 120px; overflow: hidden; position: relative; }
   .abstract-body.expanded { max-height: none; }
-
-  .abstract-body.collapsed::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 40px;
-    background: linear-gradient(transparent, white);
-  }
-
-  /* Stats grid */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  .stat-card {
-    background: white;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.25rem;
-    text-align: center;
-  }
-
-  .stat-card .num {
-    font-family: 'Playfair Display', serif;
-    font-size: 2.5rem;
-    color: var(--navy);
-    font-weight: 700;
-    line-height: 1;
-  }
-
-  .stat-card .label {
-    font-size: 0.8rem;
-    color: var(--muted);
-    margin-top: 0.4rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  /* Charts */
-  .charts-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-  }
-
-  /* Email preview */
-  .email-preview {
-    background: #F9F9F9;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.5rem;
-    font-size: 0.88rem;
-    line-height: 1.8;
-    white-space: pre-wrap;
-    font-family: Georgia, serif;
-    max-height: 400px;
-    overflow-y: auto;
-  }
-
-  /* Table */
+  .abstract-body.collapsed::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 40px; background: linear-gradient(transparent, white); }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .stat-card { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; text-align: center; }
+  .stat-card .num { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--navy); font-weight: 700; line-height: 1; }
+  .stat-card .label { font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+  .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+  .email-preview { background: #F9F9F9; border: 1px solid var(--border); border-radius: 8px; padding: 1.5rem; font-size: 0.88rem; line-height: 1.8; white-space: pre-wrap; font-family: Georgia, serif; max-height: 400px; overflow-y: auto; }
   table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
   th { background: var(--navy); color: white; padding: 0.75rem 1rem; text-align: left; font-weight: 500; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
   td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
   tr:hover td { background: #FAFAF8; }
-
-  .score-cell {
-    display: inline-block;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 32px;
-    font-weight: 600;
-    font-size: 0.85rem;
-  }
-
+  .score-cell { display: inline-block; width: 32px; height: 32px; border-radius: 50%; text-align: center; line-height: 32px; font-weight: 600; font-size: 0.85rem; }
   .score-high { background: #D1FAE5; color: #065F46; }
   .score-mid { background: #FEF3C7; color: #92400E; }
   .score-low { background: #FEE2E2; color: #991B1B; }
-
-  /* Form elements */
-  select, input[type="text"] {
-    padding: 0.55rem 0.9rem;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
+  select, input[type="text"] { padding: 0.55rem 0.9rem; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
   select:focus, input[type="text"]:focus { border-color: var(--gold); }
-
-  .toolbar {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  .toolbar h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    color: var(--navy);
-    flex: 1;
-  }
-
-  /* Acceptance selector */
-  .acceptance-badge {
-    padding: 0.25rem 0.7rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
+  .toolbar { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .toolbar h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--navy); flex: 1; }
   .status-accepted { background: #D1FAE5; color: #065F46; }
   .status-rejected { background: #FEE2E2; color: #991B1B; }
   .status-pending { background: #F3F4F6; color: #6B7280; }
   .status-waitlist { background: #FEF3C7; color: #92400E; }
-
-  /* Modal */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-  }
-
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; padding: 2rem; }
   .modal-overlay.open { display: flex; }
-
-  .modal {
-    background: white;
-    border-radius: 16px;
-    padding: 2rem;
-    max-width: 700px;
-    width: 100%;
-    max-height: 85vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  }
-
-  .modal h3 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    color: var(--navy);
-    margin-bottom: 1.5rem;
-  }
-
-  .modal-footer {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border);
-  }
-
+  .modal { background: white; border-radius: 16px; padding: 2rem; max-width: 700px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+  .modal h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: var(--navy); margin-bottom: 1.5rem; }
+  .modal-footer { display: flex; gap: 1rem; justify-content: flex-end; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
   label { font-size: 0.85rem; font-weight: 500; color: var(--navy); display: block; margin-bottom: 0.4rem; }
-  
   .form-group { margin-bottom: 1.2rem; }
-
-  textarea {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.88rem;
-    resize: vertical;
-    outline: none;
-    transition: border-color 0.2s;
-  }
-
+  textarea { width: 100%; padding: 0.75rem; border: 1.5px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; resize: vertical; outline: none; transition: border-color 0.2s; }
   textarea:focus { border-color: var(--gold); }
-
-  .section-header {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
-    color: var(--navy);
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid var(--gold);
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  .info-box {
-    background: #EFF6FF;
-    border: 1px solid #BFDBFE;
-    border-radius: 8px;
-    padding: 1rem 1.25rem;
-    font-size: 0.88rem;
-    color: #1E40AF;
-    margin-bottom: 1.5rem;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 4rem 2rem;
-    color: var(--muted);
-  }
-
+  .section-header { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--navy); margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--gold); display: flex; align-items: center; gap: 0.75rem; }
+  .info-box { background: #EFF6FF; border: 1px solid #BFDBFE; border-radius: 8px; padding: 1rem 1.25rem; font-size: 0.88rem; color: #1E40AF; margin-bottom: 1.5rem; }
+  .empty-state { text-align: center; padding: 4rem 2rem; color: var(--muted); }
   .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; }
   .empty-state h3 { font-family: 'Playfair Display', serif; color: var(--navy); margin-bottom: 0.5rem; }
 
-  /* Print styles embedded */
-  #print-content { display: none; }
-
-  .ratings-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 0.5rem;
-    margin-top: 0.5rem;
+  /* ── SCHEDULE STYLES ── */
+  .schedule-wrapper { position: relative; }
+  .schedule-block {
+    display: flex;
+    align-items: stretch;
+    margin-bottom: 0.5rem;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
   }
-
-  .rating-item {
-    background: var(--cream);
-    border-radius: 6px;
-    padding: 0.5rem;
-    text-align: center;
+  .schedule-time {
+    background: var(--navy);
+    color: white;
+    padding: 1rem 1.2rem;
     font-size: 0.78rem;
+    font-weight: 600;
+    min-width: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.2rem;
+    line-height: 1.4;
   }
+  .schedule-time .duration { color: var(--gold-light); font-size: 0.7rem; font-weight: 400; }
+  .schedule-body { flex: 1; padding: 1rem 1.4rem; }
+  .schedule-body .event-label { font-weight: 600; color: var(--navy); font-size: 0.95rem; margin-bottom: 0.3rem; }
+  .schedule-body .location-label { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .schedule-block.block-special { border-left: 4px solid var(--gold); }
+  .schedule-block.block-oral { border-left: 4px solid #1E40AF; }
+  .schedule-block.block-rapid { border-left: 4px solid #92400E; }
+  .schedule-block.block-poster { border-left: 4px solid #065F46; }
+  .schedule-block.block-break { background: var(--cream); }
+  .presentation-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.55rem 0;
+    border-bottom: 1px solid #f0ece4;
+    font-size: 0.82rem;
+  }
+  .presentation-row:last-child { border-bottom: none; }
+  .pres-num { background: var(--navy); color: var(--gold); font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.45rem; border-radius: 4px; flex-shrink: 0; font-family: 'Playfair Display', serif; }
+  .pres-num.rapid-num { background: #92400E; color: #FEF3C7; }
+  .pres-num.poster-num { background: #065F46; color: #D1FAE5; }
+  .pres-info { flex: 1; }
+  .pres-info .pres-title { font-weight: 500; color: var(--navy); line-height: 1.4; }
+  .pres-info .pres-author { color: var(--muted); font-size: 0.78rem; margin-top: 0.15rem; }
+  .pres-info .pres-time { color: var(--muted); font-size: 0.75rem; margin-top: 0.1rem; font-style: italic; }
+  .theme-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: var(--gold-light);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+  }
+  .theme-badge.multi { background: linear-gradient(135deg, #4B5563 0%, #374151 100%); color: #E5E7EB; }
+  .schedule-toolbar { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .sched-stat { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 0.6rem 1rem; font-size: 0.82rem; }
+  .sched-stat strong { color: var(--navy); font-weight: 700; }
+  .ai-loading { display: flex; align-items: center; gap: 0.75rem; color: var(--muted); font-size: 0.85rem; padding: 1rem; }
+  .ai-spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .drag-handle { cursor: grab; color: var(--muted); font-size: 0.9rem; padding: 0 0.3rem; flex-shrink: 0; opacity: 0.5; }
+  .drag-handle:hover { opacity: 1; }
+  .presentation-row.dragging { opacity: 0.4; }
+  .presentation-row.drag-over-row { border-top: 2px solid var(--gold); }
 
-  .rating-item .r-label { color: var(--muted); margin-bottom: 0.2rem; }
-  .rating-item .r-val { font-weight: 700; color: var(--navy); font-size: 1rem; }
+  /* ── FEEDBACK STYLES ── */
+  .feedback-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .feedback-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; gap: 1rem; }
+  .feedback-card-header .fc-title { font-weight: 600; color: var(--navy); font-size: 0.95rem; }
+  .feedback-card-header .fc-meta { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+  .feedback-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .feedback-col h5 { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.6rem; padding-bottom: 0.4rem; border-bottom: 2px solid; }
+  .feedback-col.strengths h5 { color: #065F46; border-color: #D1FAE5; }
+  .feedback-col.improvements h5 { color: #92400E; border-color: #FEF3C7; }
+  .feedback-bullets { list-style: none; }
+  .feedback-bullets li { font-size: 0.83rem; line-height: 1.5; padding: 0.35rem 0; padding-left: 1.1rem; position: relative; color: #374151; border-bottom: 1px dashed #f0ece4; }
+  .feedback-bullets li:last-child { border-bottom: none; }
+  .feedback-bullets li::before { content: '•'; position: absolute; left: 0; }
+  .strengths .feedback-bullets li::before { color: #2D6A4F; }
+  .improvements .feedback-bullets li::before { color: #92400E; }
+  .raw-toggle { font-size: 0.75rem; color: var(--muted); cursor: pointer; text-decoration: underline; }
+  .raw-reviews { margin-top: 0.75rem; background: var(--cream); border-radius: 6px; padding: 0.75rem; font-size: 0.78rem; line-height: 1.6; color: #4B5563; display: none; }
+  .raw-reviews.visible { display: block; }
+  .ai-badge { display: inline-flex; align-items: center; gap: 0.3rem; background: linear-gradient(135deg, #1A2744, #243360); color: var(--gold-light); font-size: 0.7rem; font-weight: 600; padding: 0.2rem 0.6rem; border-radius: 12px; letter-spacing: 0.05em; }
 
-  /* Responsive */
   @media (max-width: 768px) {
     header, main, nav { padding-left: 1.5rem; padding-right: 1.5rem; }
     .charts-grid { grid-template-columns: 1fr; }
+    .feedback-cols { grid-template-columns: 1fr; }
+    .schedule-time { min-width: 110px; }
   }
 </style>
 </head>
 <body>
-
 <header>
   <div>
     <h1>SoAR 2026 — Abstract Review Manager</h1>
@@ -498,21 +218,19 @@
   </div>
   <span class="badge">Review Portal</span>
 </header>
-
 <nav>
-  <button class="active" onclick="showTab('abstracts')">📄 Abstracts</button>
-  <button onclick="showTab('dashboard')">📊 Dashboard</button>
-  <button onclick="showTab('evaluations')">⭐ Evaluations</button>
-  <button onclick="showTab('email')">✉️ Email & Decisions</button>
+  <button class="active" onclick="showTab('abstracts', this)">📄 Abstracts</button>
+  <button onclick="showTab('dashboard', this)">📊 Dashboard</button>
+  <button onclick="showTab('evaluations', this)">⭐ Evaluations</button>
+  <button onclick="showTab('feedback', this)">💬 Feedback</button>
+  <button onclick="showTab('schedule', this)">🗓️ Schedule</button>
+  <button onclick="showTab('email', this)">✉️ Email & Decisions</button>
 </nav>
-
 <main>
+
   <!-- ABSTRACTS TAB -->
   <div id="tab-abstracts" class="tab-content active">
-    <div class="info-box">
-      Upload the abstract submissions Excel/CSV file. The tool will automatically map columns and assign Abstract IDs.
-    </div>
-
+    <div class="info-box">Upload the abstract submissions Excel/CSV file. The tool will automatically map columns and assign Abstract IDs.</div>
     <div class="drop-zone" id="abstract-drop" onclick="document.getElementById('abstract-file').click()">
       <div class="icon">📂</div>
       <h3>Drop Abstract Submissions File Here</h3>
@@ -521,7 +239,6 @@
       <button class="btn btn-primary" onclick="event.stopPropagation()">Browse File</button>
       <input type="file" id="abstract-file" accept=".xlsx,.csv,.xls" style="display:none" onchange="loadAbstracts(this.files[0])">
     </div>
-
     <div id="abstracts-loaded" style="display:none; margin-top:2rem;">
       <div class="toolbar">
         <h2>Submitted Abstracts</h2>
@@ -541,7 +258,6 @@
   <!-- DASHBOARD TAB -->
   <div id="tab-dashboard" class="tab-content">
     <div class="section-header">📊 Submission Overview</div>
-    
     <div class="stats-grid" id="stats-grid">
       <div class="stat-card"><div class="num" id="stat-total">—</div><div class="label">Total Submissions</div></div>
       <div class="stat-card"><div class="num" id="stat-oral">—</div><div class="label">Oral Presentations</div></div>
@@ -549,19 +265,14 @@
       <div class="stat-card"><div class="num" id="stat-rapid">—</div><div class="label">Rapid Fire</div></div>
       <div class="stat-card"><div class="num" id="stat-reviewed">—</div><div class="label">Reviewed</div></div>
     </div>
-
     <div class="charts-grid">
-      <div class="card">
-        <h3>Presentation Type Requested</h3>
-        <canvas id="chart-types"></canvas>
-      </div>
+      <div class="card"><h3>Presentation Type Requested</h3><canvas id="chart-types"></canvas></div>
       <div class="card">
         <h3>Reviewer vs. Submitter Preference</h3>
         <canvas id="chart-match"></canvas>
         <p id="chart-match-empty" style="color:var(--muted);font-size:0.85rem;text-align:center;padding:2rem">Load evaluation data to see this chart</p>
       </div>
     </div>
-
     <div class="card">
       <h3>Average Scores by Category</h3>
       <canvas id="chart-scores" style="max-height:200px"></canvas>
@@ -571,10 +282,7 @@
 
   <!-- EVALUATIONS TAB -->
   <div id="tab-evaluations" class="tab-content">
-    <div class="info-box">
-      After the review session, download the evaluation Google Form responses as CSV and drop it here.
-    </div>
-
+    <div class="info-box">After the review session, download the evaluation Google Form responses as CSV and drop it here.</div>
     <div class="drop-zone" id="eval-drop" onclick="document.getElementById('eval-file').click()">
       <div class="icon">⭐</div>
       <h3>Drop Evaluation Responses File Here</h3>
@@ -583,7 +291,6 @@
       <button class="btn btn-primary" onclick="event.stopPropagation()">Browse File</button>
       <input type="file" id="eval-file" accept=".xlsx,.csv,.xls" style="display:none" onchange="loadEvaluations(this.files[0])">
     </div>
-
     <div id="evals-loaded" style="display:none; margin-top:2rem;">
       <div class="toolbar">
         <h2>Evaluation Results</h2>
@@ -593,18 +300,7 @@
         <table id="eval-table">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Title</th>
-              <th>Author</th>
-              <th>Relevance</th>
-              <th>Method</th>
-              <th>Clarity</th>
-              <th>Results</th>
-              <th>Novelty</th>
-              <th>Avg Score</th>
-              <th>Reviews</th>
-              <th>Requested</th>
-              <th>Decision</th>
+              <th>ID</th><th>Title</th><th>Author</th><th>Relevance</th><th>Method</th><th>Clarity</th><th>Results</th><th>Novelty</th><th>Avg Score</th><th>Reviews</th><th>Requested</th><th>Decision</th>
             </tr>
           </thead>
           <tbody id="eval-tbody"></tbody>
@@ -613,42 +309,77 @@
     </div>
   </div>
 
+  <!-- FEEDBACK TAB -->
+  <div id="tab-feedback" class="tab-content">
+    <div class="section-header">💬 Reviewer Feedback Summary</div>
+    <div class="info-box" id="feedback-info-box">
+      Load the evaluation file first (on the Evaluations tab), then return here to see AI-summarized feedback for each abstract. The tool reads the <strong>"Constructive Feedback: Strengths/Positives"</strong> and <strong>"Constructive Feedback: Areas for Improvement"</strong> columns from your evaluation form.
+    </div>
+    <div id="feedback-loading" style="display:none;">
+      <div class="ai-loading"><div class="ai-spinner"></div> Summarizing reviewer feedback with AI — this may take a moment…</div>
+    </div>
+    <div id="feedback-container"></div>
+  </div>
+
+  <!-- SCHEDULE TAB -->
+  <div id="tab-schedule" class="tab-content">
+    <div class="section-header">🗓️ Conference Schedule Builder</div>
+    <div class="info-box" id="schedule-info-box">
+      Load abstracts first. The schedule is auto-generated based on accepted presentations and the SoAR 2026 programme template. Presentations are grouped into thematic sessions using AI analysis. You can drag and drop to reorder within each session.
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem;" id="schedule-settings">
+      <div class="card">
+        <h3 style="font-size:0.9rem;margin-bottom:0.8rem">Date & Conference Info</h3>
+        <div class="form-group"><label>Conference Date</label><input type="text" id="sched-date" value="Tuesday, April 29, 2026" style="width:100%"></div>
+        <div class="form-group"><label>Venue</label><input type="text" id="sched-venue" value="EXP 1689 (Auditorium)" style="width:100%"></div>
+        <div class="form-group"><label>Poster Venue</label><input type="text" id="sched-poster-venue" value="EXP Foyer" style="width:100%"></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:0.9rem;margin-bottom:0.8rem">Oral Presentation Settings</h3>
+        <div class="form-group"><label>Duration per oral (min)</label><input type="text" id="sched-oral-dur" value="10" style="width:100%"></div>
+        <div class="form-group"><label>Session 1 Start (oral)</label><input type="text" id="sched-oral1-start" value="09:15" style="width:100%"></div>
+        <div class="form-group"><label>Session 2 Start (oral)</label><input type="text" id="sched-oral2-start" value="11:30" style="width:100%"></div>
+        <div class="form-group"><label>Session 3 Start (oral)</label><input type="text" id="sched-oral3-start" value="15:30" style="width:100%"></div>
+      </div>
+      <div class="card">
+        <h3 style="font-size:0.9rem;margin-bottom:0.8rem">Rapid Fire Settings</h3>
+        <div class="form-group"><label>Duration per rapid (min)</label><input type="text" id="sched-rapid-dur" value="5" style="width:100%"></div>
+        <div class="form-group"><label>Session 1 Start (rapid)</label><input type="text" id="sched-rapid1-start" value="10:45" style="width:100%"></div>
+        <div class="form-group"><label>Session 2 Start (rapid)</label><input type="text" id="sched-rapid2-start" value="14:15" style="width:100%"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <button class="btn btn-primary" onclick="buildSchedule()">🔄 Generate Schedule</button>
+      <button class="btn btn-gold" id="analyze-themes-btn" onclick="analyzeThemes()" style="display:none">🧠 Analyze Themes with AI</button>
+      <button class="btn btn-outline" onclick="exportSchedule()">⬇ Export Schedule (Excel)</button>
+      <button class="btn btn-outline" onclick="exportScheduleWord()">⬇ Export Schedule (Word)</button>
+    </div>
+
+    <div id="schedule-stats" style="display:none;margin-bottom:1.5rem;">
+      <div class="schedule-toolbar" id="schedule-stat-row"></div>
+    </div>
+
+    <div id="schedule-output"></div>
+  </div>
+
   <!-- EMAIL TAB -->
   <div id="tab-email" class="tab-content">
     <div class="section-header">✉️ Author Notifications</div>
-    
-    <div class="info-box">
-      Set decisions and customize the email template. Emails are generated per author with their personalized feedback.
-    </div>
-
+    <div class="info-box">Set decisions and customize the email template. Emails are generated per author with their personalized feedback.</div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; margin-bottom:2rem;">
       <div class="card">
         <h3>Email Template Settings</h3>
-        <div class="form-group">
-          <label>Conference Date</label>
-          <input type="text" id="conf-date" value="Tuesday April 29, 2025" style="width:100%">
-        </div>
-        <div class="form-group">
-          <label>Slide Submission Deadline</label>
-          <input type="text" id="slide-deadline" value="April 25, 2025" style="width:100%">
-        </div>
-        <div class="form-group">
-          <label>Registration Link</label>
-          <input type="text" id="reg-link" value="https://uwaterloo.ca1.qualtrics.com/jfe/form/SV_6zETBrnVsJ5qhbE" style="width:100%">
-        </div>
-        <div class="form-group">
-          <label>Sign-off Names</label>
-          <input type="text" id="signoff-names" value="Hana and Amy" style="width:100%">
-        </div>
-        <div class="form-group">
-          <label>Contact Email</label>
-          <input type="text" id="contact-email" value="soar@uwaterloo.ca" style="width:100%">
-        </div>
+        <div class="form-group"><label>Conference Date</label><input type="text" id="conf-date" value="Tuesday April 29, 2026" style="width:100%"></div>
+        <div class="form-group"><label>Slide Submission Deadline</label><input type="text" id="slide-deadline" value="April 25, 2026" style="width:100%"></div>
+        <div class="form-group"><label>Registration Link</label><input type="text" id="reg-link" value="https://uwaterloo.ca1.qualtrics.com/jfe/form/SV_6zETBrnVsJ5qhbE" style="width:100%"></div>
+        <div class="form-group"><label>Sign-off Names</label><input type="text" id="signoff-names" value="Hana and Amy" style="width:100%"></div>
+        <div class="form-group"><label>Contact Email</label><input type="text" id="contact-email" value="soar@uwaterloo.ca" style="width:100%"></div>
       </div>
-
       <div class="card">
         <h3>Preview Email</h3>
-        <div style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <div style="margin-bottom:1rem;">
           <button class="btn btn-outline" onclick="previewEmail(0)">Preview First Abstract</button>
         </div>
         <div id="email-preview-box" class="email-preview" style="min-height:200px;font-size:0.82rem">
@@ -656,7 +387,6 @@
         </div>
       </div>
     </div>
-
     <div class="card">
       <h3>All Authors — Decisions & Email Generation</h3>
       <div class="toolbar" style="margin-bottom:1rem;">
@@ -673,9 +403,7 @@
       <div style="overflow-x:auto;">
         <table>
           <thead>
-            <tr>
-              <th>ID</th><th>Author</th><th>Email</th><th>Title</th><th>Type Requested</th><th>Avg Score</th><th>Decision</th><th>Final Format</th><th>Preview</th>
-            </tr>
+            <tr><th>ID</th><th>Author</th><th>Email</th><th>Title</th><th>Type Requested</th><th>Avg Score</th><th>Decision</th><th>Final Format</th><th>Preview</th></tr>
           </thead>
           <tbody id="email-tbody"></tbody>
         </table>
@@ -696,29 +424,31 @@
   </div>
 </div>
 
-<!-- Print Content (hidden) -->
-<div id="print-content"></div>
-
 <script>
 // ============================================================
 // STATE
 // ============================================================
 let abstracts = [];
 let evaluations = [];
-let decisions = {}; // abstractId -> { status, finalFormat }
+let decisions = {};
 let chartTypes = null, chartMatch = null, chartScores = null;
+let scheduleData = null;         // built schedule segments
+let abstractThemes = {};         // abstractId -> theme string
+let feedbackSummaries = {};      // abstractId -> { strengths:[], improvements:[] }
 
 // ============================================================
 // TAB NAVIGATION
 // ============================================================
-function showTab(name) {
+function showTab(name, btn) {
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
-  event.currentTarget.classList.add('active');
+  if (btn) btn.classList.add('active');
   if (name === 'dashboard') updateDashboard();
   if (name === 'evaluations') renderEvalTable();
   if (name === 'email') renderEmailTable();
+  if (name === 'feedback') renderFeedbackTab();
+  if (name === 'schedule' && scheduleData) renderSchedule();
 }
 
 // ============================================================
@@ -729,8 +459,7 @@ function setupDrop(zoneId, handler) {
   zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
   zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
   zone.addEventListener('drop', e => {
-    e.preventDefault();
-    zone.classList.remove('drag-over');
+    e.preventDefault(); zone.classList.remove('drag-over');
     const file = e.dataTransfer.files[0];
     if (file) handler(file);
   });
@@ -747,31 +476,22 @@ function loadAbstracts(file) {
     const wb = XLSX.read(e.target.result, { type: 'array' });
     const ws = wb.Sheets[wb.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
-    
-    const headers = rows[0];
-    
-    abstracts = rows.slice(1).filter(r => r.some(c => c)).map((row, i) => {
-      // Map by position: 0=Timestamp,1=Name,2=Email,3=Affiliation,4=Level,5=Title,6=Supervisors,7=Abstract,8=PrefType,9=HowHeard
-      return {
-        id: 'A' + String(i + 1).padStart(3, '0'),
-        num: i + 1,
-        name: row[1] || '',
-        email: row[2] || '',
-        affiliation: row[3] || '',
-        level: row[4] || '',
-        title: row[5] || '',
-        supervisors: row[6] || '',
-        abstract: row[7] || '',
-        prefType: row[8] || '',
-        rawRow: row
-      };
-    });
-
-    // Init decisions
+    abstracts = rows.slice(1).filter(r => r.some(c => c)).map((row, i) => ({
+      id: 'A' + String(i + 1).padStart(3, '0'),
+      num: i + 1,
+      name: row[1] || '',
+      email: row[2] || '',
+      affiliation: row[3] || '',
+      level: row[4] || '',
+      title: row[5] || '',
+      supervisors: row[6] || '',
+      abstract: row[7] || '',
+      prefType: row[8] || '',
+      rawRow: row
+    }));
     abstracts.forEach(a => {
       if (!decisions[a.id]) decisions[a.id] = { status: 'pending', finalFormat: a.prefType };
     });
-
     document.getElementById('abstract-drop').style.display = 'none';
     document.getElementById('abstracts-loaded').style.display = 'block';
     renderAbstracts();
@@ -792,19 +512,16 @@ function getTypeTag(type) {
 function renderAbstracts() {
   const filter = document.getElementById('filter-type').value.toLowerCase();
   const search = document.getElementById('search-abstract').value.toLowerCase();
-  
   const filtered = abstracts.filter(a => {
     const typeMatch = !filter || (a.prefType || '').toLowerCase().includes(filter);
     const searchMatch = !search || a.title.toLowerCase().includes(search) || a.name.toLowerCase().includes(search);
     return typeMatch && searchMatch;
   });
-
   const container = document.getElementById('abstracts-list');
   if (filtered.length === 0) {
     container.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><h3>No abstracts found</h3><p>Try adjusting your filters.</p></div>';
     return;
   }
-
   container.innerHTML = filtered.map(a => `
     <div class="abstract-card">
       <div class="abstract-header">
@@ -819,9 +536,7 @@ function renderAbstracts() {
           <div>${a.email}</div>
         </div>
       </div>
-      <div class="abstract-body collapsed" id="body-${a.id}">
-        ${(a.abstract || '').replace(/\n/g, '<br>')}
-      </div>
+      <div class="abstract-body collapsed" id="body-${a.id}">${(a.abstract || '').replace(/\n/g, '<br>')}</div>
       <div style="margin-top:0.75rem;display:flex;gap:0.75rem;">
         <button class="btn btn-outline" style="font-size:0.8rem;padding:0.4rem 0.9rem" onclick="toggleAbstract('${a.id}')">Show More</button>
       </div>
@@ -833,13 +548,9 @@ function toggleAbstract(id) {
   const el = document.getElementById('body-' + id);
   const btn = el.nextElementSibling.querySelector('button');
   if (el.classList.contains('collapsed')) {
-    el.classList.remove('collapsed');
-    el.classList.add('expanded');
-    btn.textContent = 'Show Less';
+    el.classList.remove('collapsed'); el.classList.add('expanded'); btn.textContent = 'Show Less';
   } else {
-    el.classList.add('collapsed');
-    el.classList.remove('expanded');
-    btn.textContent = 'Show More';
+    el.classList.add('collapsed'); el.classList.remove('expanded'); btn.textContent = 'Show More';
   }
 }
 
@@ -848,32 +559,24 @@ function toggleAbstract(id) {
 // ============================================================
 function generateWordDoc() {
   if (abstracts.length === 0) { alert('No abstracts loaded.'); return; }
-
-  let body = `
-    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
-    <head>
-    <meta charset="UTF-8">
+  let body = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
+    <head><meta charset="UTF-8">
     <style>
-      @page { margin: 1.27cm 1.27cm 1.27cm 1.27cm; }
-      body { font-family: 'Calibri', sans-serif; font-size: 11pt; margin: 0; }
-      h1 { font-family: 'Georgia', serif; color: #1A2744; font-size: 16pt; text-align: center; margin-bottom: 4pt; }
-      h2 { font-family: 'Georgia', serif; color: #1A2744; font-size: 12pt; margin-top: 0; margin-bottom: 5pt; border-bottom: 1pt solid #C9A84C; padding-bottom: 3pt; }
+      @page { margin: 1.27cm; }
+      body { font-family: Calibri, sans-serif; font-size: 11pt; }
+      h1 { font-family: Georgia, serif; color: #1A2744; font-size: 16pt; text-align: center; }
+      h2 { font-family: Georgia, serif; color: #1A2744; font-size: 12pt; border-bottom: 1pt solid #C9A84C; padding-bottom: 3pt; }
       .meta { font-size: 10pt; color: #333; margin-bottom: 8pt; line-height: 1.5; }
-      .abstract-text { font-size: 10.5pt; line-height: 1.5; margin-top: 6pt; }
+      .abstract-text { font-size: 10.5pt; line-height: 1.5; }
       .label { font-weight: bold; color: #1A2744; }
       .page-break { page-break-after: always; }
-      .header-block { text-align: center; margin-bottom: 16pt; border-bottom: 2pt solid #1A2744; padding-bottom: 8pt; }
-    </style>
-    </head>
-    <body>
-    <div class="header-block">
+    </style></head><body>
+    <div style="text-align:center;border-bottom:2pt solid #1A2744;padding-bottom:8pt;margin-bottom:16pt">
       <h1>SoAR 2026 — Abstract Submissions</h1>
-      <p style="color:#555; font-size:10pt">Symposium on Aging Research · University of Waterloo</p>
+      <p style="color:#555;font-size:10pt">Symposium on Aging Research · University of Waterloo</p>
     </div>`;
-
   abstracts.forEach((a, idx) => {
-    body += `
-    <div ${idx < abstracts.length - 1 ? 'class="page-break"' : ''}>
+    body += `<div ${idx < abstracts.length - 1 ? 'class="page-break"' : ''}>
       <h2>${a.id}: ${a.title || '(Untitled)'}</h2>
       <div class="meta">
         <span class="label">Presenter:</span> ${a.name}<br>
@@ -885,19 +588,14 @@ function generateWordDoc() {
       <div class="abstract-text">${(a.abstract || '').replace(/\n/g, '<br>')}</div>
     </div>`;
   });
-
   body += `</body></html>`;
-
   const blob = new Blob([body], { type: 'application/msword' });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'SoAR_2026_Abstract_Submissions.doc';
-  a.click();
+  const a = document.createElement('a'); a.href = url; a.download = 'SoAR_2026_Abstracts.doc'; a.click();
 }
 
 // ============================================================
-// LOAD EVALUATIONS
+// LOAD EVALUATIONS — with flexible column detection
 // ============================================================
 function loadEvaluations(file) {
   const reader = new FileReader();
@@ -905,20 +603,38 @@ function loadEvaluations(file) {
     const wb = XLSX.read(e.target.result, { type: 'array' });
     const ws = wb.Sheets[wb.SheetNames[0]];
     const rows = XLSX.utils.sheet_to_json(ws, { header: 1 });
-    
+    const headers = (rows[0] || []).map(h => String(h || '').toLowerCase().trim());
+
+    // Find column indices flexibly
+    const findCol = (keywords) => {
+      for (let kw of keywords) {
+        const idx = headers.findIndex(h => h.includes(kw));
+        if (idx !== -1) return idx;
+      }
+      return -1;
+    };
+
+    const colAbstractId  = findCol(['abstract id', 'abstract_id', 'id']);
+    const colRelevance   = findCol(['relevance']);
+    const colMethodology = findCol(['methodolog', 'method']);
+    const colClarity     = findCol(['clarity']);
+    const colResults     = findCol(['results', 'impact']);
+    const colNovelty     = findCol(['novelty', 'original']);
+    const colStrengths   = findCol(['strengths', 'strength', 'positives']);
+    const colImprovements= findCol(['improvement', 'areas for', 'weakness']);
+    const colPrefFormat  = findCol(['preferred format', 'pref format', 'format']);
+
     const dataRows = rows.slice(1).filter(r => r.some(c => c));
-    
-    // Expected columns: Timestamp(0), AbstractID(1), Relevance(2), Methodology(3), Clarity(4), Results(5), Novelty(6), Strengths(7), Improvements(8), PrefFormat(9)
     evaluations = dataRows.map(row => ({
-      abstractId: String(row[1] || '').trim(),
-      relevance: parseFloat(row[2]) || 0,
-      methodology: parseFloat(row[3]) || 0,
-      clarity: parseFloat(row[4]) || 0,
-      results: parseFloat(row[5]) || 0,
-      novelty: parseFloat(row[6]) || 0,
-      strengths: row[7] || '',
-      improvements: row[8] || '',
-      prefFormat: row[9] || ''
+      abstractId:   String(row[colAbstractId >= 0 ? colAbstractId : 1] || '').trim(),
+      relevance:    parseFloat(row[colRelevance   >= 0 ? colRelevance   : 2]) || 0,
+      methodology:  parseFloat(row[colMethodology >= 0 ? colMethodology : 3]) || 0,
+      clarity:      parseFloat(row[colClarity     >= 0 ? colClarity     : 4]) || 0,
+      results:      parseFloat(row[colResults     >= 0 ? colResults     : 5]) || 0,
+      novelty:      parseFloat(row[colNovelty     >= 0 ? colNovelty     : 6]) || 0,
+      strengths:    String(row[colStrengths     >= 0 ? colStrengths     : 7] || '').trim(),
+      improvements: String(row[colImprovements  >= 0 ? colImprovements  : 8] || '').trim(),
+      prefFormat:   String(row[colPrefFormat    >= 0 ? colPrefFormat    : 9] || '').trim()
     }));
 
     document.getElementById('eval-drop').style.display = 'none';
@@ -926,6 +642,8 @@ function loadEvaluations(file) {
     renderEvalTable();
     updateDashboard();
     renderEmailTable();
+    // Auto-trigger feedback summary
+    renderFeedbackTab();
   };
   reader.readAsArrayBuffer(file);
 }
@@ -936,15 +654,12 @@ function getEvalForAbstract(id) {
   const avg = field => evals.reduce((s, e) => s + e[field], 0) / evals.length;
   return {
     count: evals.length,
-    relevance: avg('relevance'),
-    methodology: avg('methodology'),
-    clarity: avg('clarity'),
-    results: avg('results'),
-    novelty: avg('novelty'),
+    relevance: avg('relevance'), methodology: avg('methodology'),
+    clarity: avg('clarity'), results: avg('results'), novelty: avg('novelty'),
     avgScore: (avg('relevance') + avg('methodology') + avg('clarity') + avg('results') + avg('novelty')) / 5,
-    strengths: evals.map(e => e.strengths).filter(Boolean),
+    strengths:    evals.map(e => e.strengths).filter(Boolean),
     improvements: evals.map(e => e.improvements).filter(Boolean),
-    prefFormats: evals.map(e => e.prefFormat).filter(Boolean)
+    prefFormats:  evals.map(e => e.prefFormat).filter(Boolean)
   };
 }
 
@@ -961,32 +676,30 @@ function renderEvalTable() {
     tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;color:var(--muted);padding:2rem">Load abstract submissions first.</td></tr>';
     return;
   }
-
   tbody.innerHTML = abstracts.map(a => {
     const ev = getEvalForAbstract(a.id);
     const dec = decisions[a.id] || {};
-    return `
-      <tr>
-        <td><strong>${a.id}</strong></td>
-        <td style="max-width:200px;font-size:0.82rem">${a.title}</td>
-        <td>${a.name}</td>
-        <td>${ev ? scoreCell(ev.relevance) : '—'}</td>
-        <td>${ev ? scoreCell(ev.methodology) : '—'}</td>
-        <td>${ev ? scoreCell(ev.clarity) : '—'}</td>
-        <td>${ev ? scoreCell(ev.results) : '—'}</td>
-        <td>${ev ? scoreCell(ev.novelty) : '—'}</td>
-        <td>${ev ? `<strong>${ev.avgScore.toFixed(2)}</strong>` : '—'}</td>
-        <td>${ev ? ev.count : 0}</td>
-        <td>${getTypeTag(a.prefType)}</td>
-        <td>
-          <select onchange="setDecision('${a.id}', 'status', this.value)" style="font-size:0.8rem;padding:0.3rem 0.5rem;border-radius:6px;">
-            <option value="pending" ${dec.status === 'pending' ? 'selected' : ''}>Pending</option>
-            <option value="accepted" ${dec.status === 'accepted' ? 'selected' : ''}>Accept</option>
-            <option value="rejected" ${dec.status === 'rejected' ? 'selected' : ''}>Reject</option>
-            <option value="waitlist" ${dec.status === 'waitlist' ? 'selected' : ''}>Waitlist</option>
-          </select>
-        </td>
-      </tr>`;
+    return `<tr>
+      <td><strong>${a.id}</strong></td>
+      <td style="max-width:200px;font-size:0.82rem">${a.title}</td>
+      <td>${a.name}</td>
+      <td>${ev ? scoreCell(ev.relevance) : '—'}</td>
+      <td>${ev ? scoreCell(ev.methodology) : '—'}</td>
+      <td>${ev ? scoreCell(ev.clarity) : '—'}</td>
+      <td>${ev ? scoreCell(ev.results) : '—'}</td>
+      <td>${ev ? scoreCell(ev.novelty) : '—'}</td>
+      <td>${ev ? `<strong>${ev.avgScore.toFixed(2)}</strong>` : '—'}</td>
+      <td>${ev ? ev.count : 0}</td>
+      <td>${getTypeTag(a.prefType)}</td>
+      <td>
+        <select onchange="setDecision('${a.id}','status',this.value)" style="font-size:0.8rem;padding:0.3rem 0.5rem;border-radius:6px;">
+          <option value="pending"   ${dec.status==='pending'   ?'selected':''}>Pending</option>
+          <option value="accepted"  ${dec.status==='accepted'  ?'selected':''}>Accept</option>
+          <option value="rejected"  ${dec.status==='rejected'  ?'selected':''}>Reject</option>
+          <option value="waitlist"  ${dec.status==='waitlist'  ?'selected':''}>Waitlist</option>
+        </select>
+      </td>
+    </tr>`;
   }).join('');
 }
 
@@ -994,23 +707,24 @@ function renderEvalTable() {
 // DASHBOARD
 // ============================================================
 function updateStats() {
-  const total = abstracts.length;
-  const oral = abstracts.filter(a => (a.prefType || '').toLowerCase().includes('oral') || (a.prefType || '').toLowerCase().includes('standard')).length;
-  const poster = abstracts.filter(a => (a.prefType || '').toLowerCase().includes('poster')).length;
-  const rapid = abstracts.filter(a => (a.prefType || '').toLowerCase().includes('rapid')).length;
-  const reviewed = abstracts.filter(a => getEvalForAbstract(a.id)).length;
-
-  document.getElementById('stat-total').textContent = total;
-  document.getElementById('stat-oral').textContent = oral;
-  document.getElementById('stat-poster').textContent = poster;
-  document.getElementById('stat-rapid').textContent = rapid;
-  document.getElementById('stat-reviewed').textContent = reviewed;
+  const total   = abstracts.length;
+  const oral    = abstracts.filter(a => isOral(a.prefType)).length;
+  const poster  = abstracts.filter(a => isPoster(a.prefType)).length;
+  const rapid   = abstracts.filter(a => isRapid(a.prefType)).length;
+  const reviewed= abstracts.filter(a => getEvalForAbstract(a.id)).length;
+  document.getElementById('stat-total').textContent   = total;
+  document.getElementById('stat-oral').textContent    = oral;
+  document.getElementById('stat-poster').textContent  = poster;
+  document.getElementById('stat-rapid').textContent   = rapid;
+  document.getElementById('stat-reviewed').textContent= reviewed;
 }
+
+const isOral   = t => (t||'').toLowerCase().includes('oral')  || (t||'').toLowerCase().includes('standard');
+const isPoster = t => (t||'').toLowerCase().includes('poster');
+const isRapid  = t => (t||'').toLowerCase().includes('rapid');
 
 function updateDashboard() {
   updateStats();
-  
-  // Chart 1: Type distribution
   const typeCounts = { Oral: 0, Poster: 0, 'Rapid Fire': 0, Other: 0 };
   abstracts.forEach(a => {
     const t = (a.prefType || '').toLowerCase();
@@ -1019,62 +733,37 @@ function updateDashboard() {
     else if (t.includes('rapid')) typeCounts['Rapid Fire']++;
     else typeCounts.Other++;
   });
-
   if (chartTypes) chartTypes.destroy();
-  const ctx1 = document.getElementById('chart-types').getContext('2d');
-  chartTypes = new Chart(ctx1, {
+  chartTypes = new Chart(document.getElementById('chart-types').getContext('2d'), {
     type: 'doughnut',
-    data: {
-      labels: Object.keys(typeCounts),
-      datasets: [{ data: Object.values(typeCounts), backgroundColor: ['#1A2744', '#C9A84C', '#2D6A4F', '#8B3A3A'] }]
-    },
+    data: { labels: Object.keys(typeCounts), datasets: [{ data: Object.values(typeCounts), backgroundColor: ['#1A2744','#C9A84C','#2D6A4F','#8B3A3A'] }] },
     options: { plugins: { legend: { position: 'bottom' } } }
   });
-
-  // Chart 2: Submitter vs reviewer preference (if eval data)
   if (evaluations.length > 0) {
     document.getElementById('chart-match').style.display = 'block';
     document.getElementById('chart-match-empty').style.display = 'none';
-    
     let match = 0, mismatch = 0;
     abstracts.forEach(a => {
       const ev = getEvalForAbstract(a.id);
       if (ev && ev.prefFormats.length > 0) {
-        const submitterType = (a.prefType || '').toLowerCase();
-        const reviewerType = (ev.prefFormats[0] || '').toLowerCase();
-        if (submitterType.slice(0, 4) === reviewerType.slice(0, 4)) match++;
+        if ((a.prefType||'').toLowerCase().slice(0,4) === (ev.prefFormats[0]||'').toLowerCase().slice(0,4)) match++;
         else mismatch++;
       }
     });
-
     if (chartMatch) chartMatch.destroy();
-    const ctx2 = document.getElementById('chart-match').getContext('2d');
-    chartMatch = new Chart(ctx2, {
+    chartMatch = new Chart(document.getElementById('chart-match').getContext('2d'), {
       type: 'pie',
-      data: {
-        labels: ['Agreement', 'Disagreement'],
-        datasets: [{ data: [match, mismatch], backgroundColor: ['#2D6A4F', '#C9A84C'] }]
-      },
-      options: { plugins: { legend: { position: 'bottom' } } }
+      data: { labels: ['Agreement','Disagreement'], datasets: [{ data:[match,mismatch], backgroundColor:['#2D6A4F','#C9A84C'] }] },
+      options: { plugins: { legend: { position:'bottom' } } }
     });
-
-    // Chart 3: avg scores
     document.getElementById('chart-scores-empty').style.display = 'none';
-    const cats = ['relevance', 'methodology', 'clarity', 'results', 'novelty'];
-    const avgs = cats.map(c => {
-      const vals = evaluations.map(e => e[c]).filter(v => v > 0);
-      return vals.length ? vals.reduce((a, b) => a + b) / vals.length : 0;
-    });
-
+    const cats = ['relevance','methodology','clarity','results','novelty'];
+    const avgs = cats.map(c => { const vals=evaluations.map(e=>e[c]).filter(v=>v>0); return vals.length ? vals.reduce((a,b)=>a+b)/vals.length : 0; });
     if (chartScores) chartScores.destroy();
-    const ctx3 = document.getElementById('chart-scores').getContext('2d');
-    chartScores = new Chart(ctx3, {
+    chartScores = new Chart(document.getElementById('chart-scores').getContext('2d'), {
       type: 'bar',
-      data: {
-        labels: ['Relevance', 'Methodology', 'Clarity', 'Results', 'Novelty'],
-        datasets: [{ label: 'Average Score', data: avgs, backgroundColor: '#1A2744' }]
-      },
-      options: { scales: { y: { min: 0, max: 5 } }, plugins: { legend: { display: false } } }
+      data: { labels:['Relevance','Methodology','Clarity','Results','Novelty'], datasets:[{ label:'Average Score', data:avgs, backgroundColor:'#1A2744' }] },
+      options: { scales: { y: { min:0, max:5 } }, plugins: { legend: { display:false } } }
     });
   }
 }
@@ -1083,24 +772,490 @@ function updateDashboard() {
 // DECISIONS
 // ============================================================
 function setDecision(id, field, value) {
-  if (!decisions[id]) decisions[id] = { status: 'pending', finalFormat: '' };
+  if (!decisions[id]) decisions[id] = { status:'pending', finalFormat:'' };
   decisions[id][field] = value;
   renderEmailTable();
 }
-
 function applyBulkDecision() {
   const val = document.getElementById('bulk-decision').value;
   if (!val) return;
   abstracts.forEach(a => {
-    if (!decisions[a.id]) decisions[a.id] = { status: 'pending', finalFormat: a.prefType };
+    if (!decisions[a.id]) decisions[a.id] = { status:'pending', finalFormat:a.prefType };
     decisions[a.id].status = val;
   });
-  renderEvalTable();
-  renderEmailTable();
+  renderEvalTable(); renderEmailTable();
 }
 
 // ============================================================
-// EMAIL TABLE
+// SCHEDULE BUILDER
+// ============================================================
+
+// Fixed programme structure (times as minutes from midnight)
+const PROGRAMME = [
+  { key:'reg',        label:'Registration & Poster Set-Up', type:'special',  start: 8*60+30, end: 9*60,     location:'EXP Foyer' },
+  { key:'opening',    label:'Opening Remarks',              type:'special',  start: 9*60,    end: 9*60+15,  location:'EXP 1689 (Auditorium)' },
+  { key:'oral1',      label:'Oral Presentations — Session 1',type:'oral',    start: 9*60+15, end:10*60+30,  location:'EXP 1689 (Auditorium)' },
+  { key:'break1',     label:'Break',                        type:'break',    start:10*60+30, end:10*60+45,  location:'' },
+  { key:'rapid1',     label:'Rapid-Fire Presentations — Session 1',type:'rapid', start:10*60+45,end:11*60+30, location:'EXP 1689 (Auditorium)' },
+  { key:'oral2',      label:'Oral Presentations — Session 2',type:'oral',    start:11*60+30, end:12*60+30,  location:'EXP 1689 (Auditorium)' },
+  { key:'lunch',      label:'Lunch',                        type:'break',    start:12*60+30, end:13*60+15,  location:'' },
+  { key:'keynote',    label:'Keynote Speaker',              type:'special',  start:13*60+15, end:14*60+15,  location:'EXP 1689 (Auditorium)' },
+  { key:'rapid2',     label:'Rapid-Fire Presentations — Session 2',type:'rapid', start:14*60+15,end:15*60,  location:'EXP 1689 (Auditorium)' },
+  { key:'break2',     label:'Extended Break + Poster Viewing',type:'poster', start:15*60,    end:15*60+30,  location:'EXP Foyer' },
+  { key:'oral3',      label:'Oral Presentations — Session 3',type:'oral',    start:15*60+30, end:16*60+50,  location:'EXP 1689 (Auditorium)' },
+  { key:'closing',    label:'Closing Remarks & Awards',     type:'special',  start:16*60+50, end:17*60,     location:'EXP 1689 (Auditorium)' },
+];
+
+function minsToTime(m) {
+  const h = Math.floor(m / 60), min = m % 60;
+  const ampm = h >= 12 ? 'p.m.' : 'a.m.';
+  const h12  = h > 12 ? h - 12 : h === 0 ? 12 : h;
+  return `${h12}:${String(min).padStart(2,'0')} ${ampm}`;
+}
+
+function buildSchedule() {
+  if (abstracts.length === 0) { alert('Load abstracts first.'); return; }
+
+  const accepted = abstracts.filter(a => decisions[a.id]?.status === 'accepted');
+  const oralList   = accepted.filter(a => isOral(decisions[a.id]?.finalFormat || a.prefType));
+  const rapidList  = accepted.filter(a => isRapid(decisions[a.id]?.finalFormat || a.prefType));
+  const posterList = accepted.filter(a => isPoster(decisions[a.id]?.finalFormat || a.prefType));
+
+  // If nothing is accepted yet, use all abstracts by preference (preview mode)
+  const oralFinal   = oralList.length   > 0 ? oralList   : abstracts.filter(a => isOral(a.prefType));
+  const rapidFinal  = rapidList.length  > 0 ? rapidList  : abstracts.filter(a => isRapid(a.prefType));
+  const posterFinal = posterList.length > 0 ? posterList : abstracts.filter(a => isPoster(a.prefType));
+
+  const oralDur  = parseInt(document.getElementById('sched-oral-dur').value)  || 10;
+  const rapidDur = parseInt(document.getElementById('sched-rapid-dur').value) || 5;
+
+  // Distribute oral into 3 sessions, rapid into 2
+  function distribute(list, sizes) {
+    const chunks = [];
+    let idx = 0;
+    for (let s of sizes) {
+      chunks.push(list.slice(idx, idx + s)); idx += s;
+    }
+    return chunks;
+  }
+
+  const totalOral  = oralFinal.length;
+  const totalRapid = rapidFinal.length;
+
+  // Oral split: roughly 7 / 6 / 8 (but adapt)
+  const o1 = Math.ceil(totalOral / 3);
+  const o2 = Math.ceil((totalOral - o1) / 2);
+  const o3 = totalOral - o1 - o2;
+  const oralSessions = distribute(oralFinal, [o1, o2, o3]);
+
+  const r1 = Math.ceil(totalRapid / 2);
+  const r2 = totalRapid - r1;
+  const rapidSessions = distribute(rapidFinal, [r1, r2]);
+
+  scheduleData = {
+    oral1:  oralSessions[0]  || [],
+    oral2:  oralSessions[1]  || [],
+    oral3:  oralSessions[2]  || [],
+    rapid1: rapidSessions[0] || [],
+    rapid2: rapidSessions[1] || [],
+    poster: posterFinal,
+    oralDur, rapidDur
+  };
+
+  document.getElementById('analyze-themes-btn').style.display = 'inline-flex';
+  document.getElementById('schedule-stats').style.display = 'block';
+
+  renderSchedule();
+}
+
+function renderSchedule() {
+  if (!scheduleData) return;
+  const { oral1, oral2, oral3, rapid1, rapid2, poster, oralDur, rapidDur } = scheduleData;
+  const venue = document.getElementById('sched-venue').value;
+  const posterVenue = document.getElementById('sched-poster-venue').value;
+
+  // Stat row
+  document.getElementById('schedule-stat-row').innerHTML = [
+    `<div class="sched-stat">🎤 Oral: <strong>${oral1.length + oral2.length + oral3.length}</strong></div>`,
+    `<div class="sched-stat">⚡ Rapid: <strong>${rapid1.length + rapid2.length}</strong></div>`,
+    `<div class="sched-stat">🖼️ Poster: <strong>${poster.length}</strong></div>`,
+    `<div class="sched-stat">Total Presentations: <strong>${oral1.length+oral2.length+oral3.length+rapid1.length+rapid2.length+poster.length}</strong></div>`
+  ].join('');
+
+  const sessionMap = {
+    oral1:  { list: oral1,  dur: oralDur,  type:'oral',  idx:1 },
+    oral2:  { list: oral2,  dur: oralDur,  type:'oral',  idx:2 },
+    oral3:  { list: oral3,  dur: oralDur,  type:'oral',  idx:3 },
+    rapid1: { list: rapid1, dur: rapidDur, type:'rapid', idx:1 },
+    rapid2: { list: rapid2, dur: rapidDur, type:'rapid', idx:2 },
+  };
+
+  const out = document.getElementById('schedule-output');
+  let html = '';
+
+  for (const slot of PROGRAMME) {
+    const blockClass = `schedule-block block-${slot.type}`;
+    const locStr = slot.location || (slot.type==='oral'||slot.type==='rapid' ? venue : slot.type==='poster'?posterVenue:'');
+    const locHtml = locStr ? `<div class="location-label">📍 ${locStr}</div>` : '';
+
+    if (['reg','opening','break1','break2','lunch','keynote','closing'].includes(slot.key)) {
+      html += `<div class="${blockClass}">
+        <div class="schedule-time"><span>${minsToTime(slot.start)}</span><span>–</span><span>${minsToTime(slot.end)}</span><span class="duration">${slot.end-slot.start} min</span></div>
+        <div class="schedule-body"><div class="event-label">${slot.label}</div>${locHtml}</div>
+      </div>`;
+      continue;
+    }
+
+    const sess = sessionMap[slot.key];
+    if (!sess) continue;
+
+    const theme = abstractThemes[slot.key] || null;
+    const themeBadge = theme
+      ? `<div class="theme-badge ${theme.multi ? 'multi' : ''}">🏷️ ${theme.label}</div>`
+      : `<div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.5rem">Theme: <em>not yet analyzed</em> — click "Analyze Themes with AI"</div>`;
+
+    let presHtml = '';
+    let cursor = slot.start;
+    sess.list.forEach((a, i) => {
+      const presEnd = cursor + sess.dur;
+      presHtml += `<div class="presentation-row" draggable="true" data-session="${slot.key}" data-idx="${i}"
+          ondragstart="dragStart(event,'${slot.key}',${i})"
+          ondragover="dragOverRow(event)"
+          ondrop="dropRow(event,'${slot.key}',${i})"
+          ondragleave="dragLeaveRow(event)">
+        <span class="drag-handle" title="Drag to reorder">⠿</span>
+        <span class="pres-num ${sess.type==='rapid'?'rapid-num':''}">${a.id}</span>
+        <div class="pres-info">
+          <div class="pres-title">${a.title || '(Untitled)'}</div>
+          <div class="pres-author">${a.name}${a.affiliation ? ' · '+a.affiliation : ''}</div>
+          <div class="pres-time">${minsToTime(cursor)} – ${minsToTime(presEnd)}</div>
+        </div>
+      </div>`;
+      cursor = presEnd;
+    });
+
+    const totalDur = sess.list.length * sess.dur;
+    html += `<div class="${blockClass}">
+      <div class="schedule-time"><span>${minsToTime(slot.start)}</span><span>–</span><span>${minsToTime(slot.end)}</span><span class="duration">${sess.list.length} pres · ${totalDur} min</span></div>
+      <div class="schedule-body">
+        <div class="event-label">${slot.label}</div>
+        ${locHtml}
+        ${themeBadge}
+        <div id="preslist-${slot.key}">${presHtml || '<em style="color:var(--muted);font-size:0.8rem">No presentations assigned to this slot</em>'}</div>
+      </div>
+    </div>`;
+  }
+
+  // Poster block (separate at-a-glance)
+  if (poster.length > 0) {
+    const posterHtml = poster.map((a,i) => `
+      <div class="presentation-row">
+        <span class="pres-num poster-num">${a.id}</span>
+        <div class="pres-info">
+          <div class="pres-title">${a.title || '(Untitled)'}</div>
+          <div class="pres-author">${a.name}${a.affiliation ? ' · '+a.affiliation : ''}</div>
+        </div>
+      </div>`).join('');
+    html += `<div class="schedule-block block-poster" style="margin-top:1.5rem">
+      <div class="schedule-time" style="background:#065F46"><span>All Day</span><span class="duration">${poster.length} posters</span></div>
+      <div class="schedule-body"><div class="event-label">🖼️ Poster Presentations</div><div class="location-label">📍 ${posterVenue}</div>${posterHtml}</div>
+    </div>`;
+  }
+
+  out.innerHTML = html;
+}
+
+// ── DRAG TO REORDER ──
+let dragSrc = null;
+function dragStart(e, session, idx) { dragSrc = { session, idx }; e.currentTarget.classList.add('dragging'); }
+function dragOverRow(e) { e.preventDefault(); e.currentTarget.classList.add('drag-over-row'); }
+function dragLeaveRow(e) { e.currentTarget.classList.remove('drag-over-row'); }
+function dropRow(e, session, idx) {
+  e.preventDefault(); e.currentTarget.classList.remove('drag-over-row');
+  if (!dragSrc || dragSrc.session !== session || dragSrc.idx === idx) return;
+  const list = scheduleData[session];
+  const item = list.splice(dragSrc.idx, 1)[0];
+  list.splice(idx, 0, item);
+  renderSchedule();
+}
+
+// ============================================================
+// THEME ANALYSIS VIA CLAUDE API
+// ============================================================
+async function analyzeThemes() {
+  if (!scheduleData) { alert('Generate schedule first.'); return; }
+  const btn = document.getElementById('analyze-themes-btn');
+  btn.disabled = true; btn.textContent = '⏳ Analyzing…';
+
+  const sessionKeys = ['oral1','oral2','oral3','rapid1','rapid2'];
+  const sessionMap = {
+    oral1: scheduleData.oral1, oral2: scheduleData.oral2, oral3: scheduleData.oral3,
+    rapid1: scheduleData.rapid1, rapid2: scheduleData.rapid2
+  };
+
+  for (const key of sessionKeys) {
+    const list = sessionMap[key];
+    if (!list || list.length === 0) { abstractThemes[key] = { label:'No Presentations', multi:false }; continue; }
+
+    const abstracts_text = list.map(a => `Title: ${a.title}\nAbstract: ${(a.abstract||'').slice(0,300)}`).join('\n\n---\n\n');
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({
+          model:'claude-sonnet-4-20250514',
+          max_tokens:1000,
+          messages:[{
+            role:'user',
+            content:`You are analyzing a set of academic abstracts for a symposium on aging research. 
+Given the following ${list.length} abstracts from one presentation session, identify the dominant theme or themes.
+
+${abstracts_text}
+
+Respond ONLY with a JSON object with these fields:
+{
+  "label": "Short theme name (3-6 words)",
+  "description": "One sentence describing the session theme",
+  "multi": true/false (true if there are 2+ distinct themes rather than one clear theme),
+  "alternateThemes": ["theme 1", "theme 2"] (only if multi is true, list the 2-3 sub-themes)
+}
+
+No preamble, no markdown, just the JSON object.`
+          }]
+        })
+      });
+      const data = await resp.json();
+      const text = (data.content||[]).map(c=>c.text||'').join('').replace(/```json|```/g,'').trim();
+      try {
+        const parsed = JSON.parse(text);
+        abstractThemes[key] = parsed;
+      } catch {
+        abstractThemes[key] = { label:'Mixed Topics', multi:true };
+      }
+    } catch(err) {
+      abstractThemes[key] = { label:'Analysis unavailable', multi:false };
+    }
+  }
+
+  btn.disabled = false; btn.textContent = '🧠 Re-analyze Themes';
+  renderSchedule();
+}
+
+// ============================================================
+// SCHEDULE EXPORT
+// ============================================================
+function exportSchedule() {
+  if (!scheduleData) { alert('Generate schedule first.'); return; }
+  const rows = [['Time', 'Event', 'Location', 'Abstract ID', 'Presenter', 'Title', 'Theme']];
+  const { oral1, oral2, oral3, rapid1, rapid2, poster, oralDur, rapidDur } = scheduleData;
+  const sessionMap = {
+    oral1:{ list:oral1, dur:oralDur }, oral2:{ list:oral2, dur:oralDur },
+    oral3:{ list:oral3, dur:oralDur }, rapid1:{ list:rapid1, dur:rapidDur }, rapid2:{ list:rapid2, dur:rapidDur }
+  };
+
+  for (const slot of PROGRAMME) {
+    if (['reg','opening','break1','break2','lunch','keynote','closing'].includes(slot.key)) {
+      rows.push([`${minsToTime(slot.start)} – ${minsToTime(slot.end)}`, slot.label, slot.location||'', '','','','']);
+      continue;
+    }
+    const sess = sessionMap[slot.key];
+    if (!sess) continue;
+    const theme = abstractThemes[slot.key]?.label || '';
+    let cursor = slot.start;
+    sess.list.forEach(a => {
+      rows.push([`${minsToTime(cursor)} – ${minsToTime(cursor+sess.dur)}`, slot.label, slot.location||'', a.id, a.name, a.title, theme]);
+      cursor += sess.dur;
+    });
+  }
+  poster.forEach(a => rows.push(['All Day', 'Poster Session', document.getElementById('sched-poster-venue').value, a.id, a.name, a.title, '']));
+
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols'] = [{wch:22},{wch:40},{wch:25},{wch:8},{wch:25},{wch:50},{wch:30}];
+  XLSX.utils.book_append_sheet(wb, ws, 'Schedule');
+  XLSX.writeFile(wb, 'SoAR_2026_Schedule.xlsx');
+}
+
+function exportScheduleWord() {
+  if (!scheduleData) { alert('Generate schedule first.'); return; }
+  const { oral1, oral2, oral3, rapid1, rapid2, poster, oralDur, rapidDur } = scheduleData;
+  const sessionMap = {
+    oral1:{ list:oral1, dur:oralDur }, oral2:{ list:oral2, dur:oralDur },
+    oral3:{ list:oral3, dur:oralDur }, rapid1:{ list:rapid1, dur:rapidDur }, rapid2:{ list:rapid2, dur:rapidDur }
+  };
+  let rows = '';
+  for (const slot of PROGRAMME) {
+    if (['reg','opening','break1','break2','lunch','keynote','closing'].includes(slot.key)) {
+      rows += `<tr style="background:#f0f4f8"><td><b>${minsToTime(slot.start)} – ${minsToTime(slot.end)}</b></td><td colspan="4"><b>${slot.label}</b>${slot.location?'<br><span style="color:#555;font-size:9pt">'+slot.location+'</span>':''}</td></tr>`;
+      continue;
+    }
+    const sess = sessionMap[slot.key];
+    if (!sess) continue;
+    const theme = abstractThemes[slot.key];
+    rows += `<tr style="background:#EFF6FF"><td colspan="5"><b>${slot.label}</b>${theme?'  <span style="color:#1E40AF;font-size:9pt">— '+theme.label+'</span>':''}</td></tr>`;
+    let cursor = slot.start;
+    sess.list.forEach(a => {
+      rows += `<tr><td style="font-size:9pt;white-space:nowrap">${minsToTime(cursor)} – ${minsToTime(cursor+sess.dur)}</td><td style="font-size:9pt">${a.id}</td><td>${a.title||'(Untitled)'}</td><td>${a.name}</td><td style="font-size:9pt">${a.affiliation||''}</td></tr>`;
+      cursor += sess.dur;
+    });
+  }
+  const body = `<html xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="UTF-8">
+    <style>
+      @page{margin:1.5cm} body{font-family:Calibri,sans-serif;font-size:11pt}
+      h1{font-family:Georgia,serif;color:#1A2744;text-align:center;font-size:16pt}
+      table{width:100%;border-collapse:collapse;font-size:10pt}
+      th{background:#1A2744;color:white;padding:6pt 8pt;font-size:9pt}
+      td{padding:5pt 8pt;border-bottom:1pt solid #ddd;vertical-align:top}
+    </style></head><body>
+    <h1>SoAR 2026 — Conference Schedule</h1>
+    <p style="text-align:center;color:#555;font-size:10pt;margin-bottom:16pt">Symposium on Aging Research · University of Waterloo · ${document.getElementById('sched-date').value}</p>
+    <table><thead><tr><th>Time</th><th>ID</th><th>Title</th><th>Presenter</th><th>Affiliation</th></tr></thead><tbody>${rows}</tbody></table>
+  </body></html>`;
+  const blob = new Blob([body], { type:'application/msword' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='SoAR_2026_Schedule.doc'; a.click();
+}
+
+// ============================================================
+// FEEDBACK SUMMARIZATION (AI)
+// ============================================================
+async function renderFeedbackTab() {
+  const container = document.getElementById('feedback-container');
+  const loadingEl  = document.getElementById('feedback-loading');
+  const infoEl     = document.getElementById('feedback-info-box');
+
+  if (evaluations.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">💬</div><h3>No evaluation data yet</h3><p>Load the evaluation CSV on the Evaluations tab first.</p></div>';
+    return;
+  }
+  if (abstracts.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">📄</div><h3>Load abstracts first</h3><p>Then return here to see feedback.</p></div>';
+    return;
+  }
+
+  // Find abstracts that have at least one reviewer comment
+  const withFeedback = abstracts.filter(a => {
+    const ev = evaluations.filter(e => e.abstractId === a.id);
+    return ev.some(e => e.strengths || e.improvements);
+  });
+
+  if (withFeedback.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">🔍</div><h3>No feedback text found</h3><p>Make sure your evaluation file has "Strengths" and "Areas for Improvement" columns, and that Abstract IDs match.</p></div>';
+    return;
+  }
+
+  infoEl.style.display = 'none';
+  loadingEl.style.display = 'block';
+  container.innerHTML = '';
+
+  for (const a of withFeedback) {
+    const ev = evaluations.filter(e => e.abstractId === a.id);
+    const strengths_raw   = ev.map(e => e.strengths).filter(Boolean);
+    const improvements_raw= ev.map(e => e.improvements).filter(Boolean);
+
+    // Check cache
+    if (feedbackSummaries[a.id]) {
+      renderFeedbackCard(a, ev, feedbackSummaries[a.id]);
+      continue;
+    }
+
+    // Call Claude API to summarize
+    try {
+      const prompt = `You are summarizing peer reviewer feedback for an academic conference abstract on aging research.
+
+Abstract title: "${a.title}"
+Presenter: ${a.name}
+
+Reviewer Strengths/Positives (${strengths_raw.length} reviewer(s)):
+${strengths_raw.map((s,i)=>`Reviewer ${i+1}: ${s}`).join('\n')}
+
+Reviewer Areas for Improvement (${improvements_raw.length} reviewer(s)):
+${improvements_raw.map((s,i)=>`Reviewer ${i+1}: ${s}`).join('\n')}
+
+Distill the reviewers' feedback into concise, actionable bullet points. Combine overlapping ideas. Be specific.
+
+Respond ONLY with a JSON object:
+{
+  "strengths": ["bullet 1", "bullet 2", ...],
+  "improvements": ["bullet 1", "bullet 2", ...]
+}
+Maximum 4 bullets per section. No preamble, no markdown, just JSON.`;
+
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
+        body: JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, messages:[{ role:'user', content:prompt }] })
+      });
+      const data = await resp.json();
+      const text = (data.content||[]).map(c=>c.text||'').join('').replace(/```json|```/g,'').trim();
+      try {
+        const parsed = JSON.parse(text);
+        feedbackSummaries[a.id] = parsed;
+        renderFeedbackCard(a, ev, parsed);
+      } catch {
+        feedbackSummaries[a.id] = { strengths: strengths_raw, improvements: improvements_raw };
+        renderFeedbackCard(a, ev, feedbackSummaries[a.id]);
+      }
+    } catch(err) {
+      feedbackSummaries[a.id] = { strengths: strengths_raw, improvements: improvements_raw };
+      renderFeedbackCard(a, ev, feedbackSummaries[a.id]);
+    }
+  }
+
+  loadingEl.style.display = 'none';
+}
+
+function renderFeedbackCard(a, ev, summary) {
+  const container = document.getElementById('feedback-container');
+  const evalInfo = getEvalForAbstract(a.id);
+  const scoreStr = evalInfo ? `Avg: ${evalInfo.avgScore.toFixed(2)} · ${evalInfo.count} reviewer(s)` : '';
+
+  const strengthBullets = (summary.strengths || []).map(s=>`<li>${s}</li>`).join('');
+  const improvBullets   = (summary.improvements || []).map(s=>`<li>${s}</li>`).join('');
+
+  const rawStrengths    = ev.map(e=>e.strengths).filter(Boolean).map((s,i)=>`<b>Reviewer ${i+1}:</b> ${s}`).join('<br><br>');
+  const rawImprovements = ev.map(e=>e.improvements).filter(Boolean).map((s,i)=>`<b>Reviewer ${i+1}:</b> ${s}`).join('<br><br>');
+
+  const card = document.createElement('div');
+  card.className = 'feedback-card';
+  card.id = `fc-${a.id}`;
+  card.innerHTML = `
+    <div class="feedback-card-header">
+      <div>
+        <div class="fc-title">${a.id}: ${a.title || '(Untitled)'}</div>
+        <div class="fc-meta">${a.name} · ${a.affiliation} · ${scoreStr}</div>
+      </div>
+      <span class="ai-badge">✨ AI Summary</span>
+    </div>
+    <div class="feedback-cols">
+      <div class="feedback-col strengths">
+        <h5>✅ Strengths</h5>
+        <ul class="feedback-bullets">${strengthBullets || '<li style="color:var(--muted)">No strength feedback provided</li>'}</ul>
+      </div>
+      <div class="feedback-col improvements">
+        <h5>🔧 Areas for Improvement</h5>
+        <ul class="feedback-bullets">${improvBullets || '<li style="color:var(--muted)">No improvement feedback provided</li>'}</ul>
+      </div>
+    </div>
+    <div style="margin-top:0.75rem">
+      <span class="raw-toggle" onclick="toggleRaw('${a.id}')">Show raw reviewer comments</span>
+      <div class="raw-reviews" id="raw-${a.id}">
+        ${rawStrengths ? `<p style="font-weight:600;margin-bottom:0.4rem;color:#2D6A4F">Strengths (raw):</p>${rawStrengths}<br><br>` : ''}
+        ${rawImprovements ? `<p style="font-weight:600;margin-bottom:0.4rem;color:#92400E">Improvements (raw):</p>${rawImprovements}` : ''}
+      </div>
+    </div>`;
+  container.appendChild(card);
+}
+
+function toggleRaw(id) {
+  const el = document.getElementById('raw-' + id);
+  el.classList.toggle('visible');
+  const toggle = el.previousElementSibling;
+  toggle.textContent = el.classList.contains('visible') ? 'Hide raw reviewer comments' : 'Show raw reviewer comments';
+}
+
+// ============================================================
+// EMAIL TABLE & GENERATION
 // ============================================================
 function renderEmailTable() {
   const tbody = document.getElementById('email-tbody');
@@ -1108,85 +1263,81 @@ function renderEmailTable() {
     tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:2rem">Load abstract submissions to manage emails.</td></tr>';
     return;
   }
-
-  const formats = ['Standard Oral Presentation', 'Rapid Fire Presentation', 'Poster Presentation', 'Workshop'];
-  
+  const formats = ['Standard Oral Presentation','Rapid Fire Presentation','Poster Presentation','Workshop'];
   tbody.innerHTML = abstracts.map(a => {
     const ev = getEvalForAbstract(a.id);
-    const dec = decisions[a.id] || { status: 'pending', finalFormat: a.prefType };
-    const statusColors = { accepted: 'status-accepted', rejected: 'status-rejected', pending: 'status-pending', waitlist: 'status-waitlist' };
-    return `
-      <tr>
-        <td><strong>${a.id}</strong></td>
-        <td>${a.name}</td>
-        <td style="font-size:0.8rem">${a.email}</td>
-        <td style="font-size:0.82rem;max-width:160px">${a.title}</td>
-        <td>${getTypeTag(a.prefType)}</td>
-        <td>${ev ? ev.avgScore.toFixed(2) : '—'}</td>
-        <td>
-          <select onchange="setDecision('${a.id}', 'status', this.value)" style="font-size:0.8rem;padding:0.3rem;border-radius:6px">
-            <option value="pending" ${dec.status === 'pending' ? 'selected' : ''}>Pending</option>
-            <option value="accepted" ${dec.status === 'accepted' ? 'selected' : ''}>Accept</option>
-            <option value="rejected" ${dec.status === 'rejected' ? 'selected' : ''}>Reject</option>
-            <option value="waitlist" ${dec.status === 'waitlist' ? 'selected' : ''}>Waitlist</option>
-          </select>
-        </td>
-        <td>
-          <select onchange="setDecision('${a.id}', 'finalFormat', this.value)" style="font-size:0.8rem;padding:0.3rem;border-radius:6px">
-            ${formats.map(f => `<option value="${f}" ${dec.finalFormat === f ? 'selected' : ''}>${f}</option>`).join('')}
-          </select>
-        </td>
-        <td>
-          <button class="btn btn-outline" style="font-size:0.78rem;padding:0.35rem 0.7rem" onclick="previewEmail(${a.num - 1})">Preview</button>
-        </td>
-      </tr>`;
+    const dec = decisions[a.id] || { status:'pending', finalFormat:a.prefType };
+    return `<tr>
+      <td><strong>${a.id}</strong></td>
+      <td>${a.name}</td>
+      <td style="font-size:0.8rem">${a.email}</td>
+      <td style="font-size:0.82rem;max-width:160px">${a.title}</td>
+      <td>${getTypeTag(a.prefType)}</td>
+      <td>${ev ? ev.avgScore.toFixed(2) : '—'}</td>
+      <td>
+        <select onchange="setDecision('${a.id}','status',this.value)" style="font-size:0.8rem;padding:0.3rem;border-radius:6px">
+          <option value="pending"  ${dec.status==='pending'  ?'selected':''}>Pending</option>
+          <option value="accepted" ${dec.status==='accepted' ?'selected':''}>Accept</option>
+          <option value="rejected" ${dec.status==='rejected' ?'selected':''}>Reject</option>
+          <option value="waitlist" ${dec.status==='waitlist' ?'selected':''}>Waitlist</option>
+        </select>
+      </td>
+      <td>
+        <select onchange="setDecision('${a.id}','finalFormat',this.value)" style="font-size:0.8rem;padding:0.3rem;border-radius:6px">
+          ${formats.map(f=>`<option value="${f}" ${dec.finalFormat===f?'selected':''}>${f}</option>`).join('')}
+        </select>
+      </td>
+      <td><button class="btn btn-outline" style="font-size:0.78rem;padding:0.35rem 0.7rem" onclick="previewEmail(${a.num-1})">Preview</button></td>
+    </tr>`;
   }).join('');
 }
 
-// ============================================================
-// EMAIL GENERATION
-// ============================================================
 function buildEmail(abstract) {
-  const dec = decisions[abstract.id] || { status: 'pending', finalFormat: abstract.prefType || 'Presentation' };
+  const dec = decisions[abstract.id] || { status:'pending', finalFormat: abstract.prefType||'Presentation' };
   const ev = getEvalForAbstract(abstract.id);
-  const confDate = document.getElementById('conf-date')?.value || 'Tuesday April 29, 2025';
-  const slideDeadline = document.getElementById('slide-deadline')?.value || 'April 25, 2025';
-  const regLink = document.getElementById('reg-link')?.value || 'https://uwaterloo.ca1.qualtrics.com/jfe/form/SV_6zETBrnVsJ5qhbE';
-  const signoff = document.getElementById('signoff-names')?.value || 'Hana and Amy';
-  const contactEmail = document.getElementById('contact-email')?.value || 'soar@uwaterloo.ca';
-  
-  const firstName = abstract.name.split(' ')[0];
-  const isAccepted = dec.status === 'accepted';
-  const isRejected = dec.status === 'rejected';
-  const isWaitlist = dec.status === 'waitlist';
-  
+  const confDate    = document.getElementById('conf-date')?.value    || 'Tuesday April 29, 2026';
+  const slideDeadline = document.getElementById('slide-deadline')?.value || 'April 25, 2026';
+  const regLink     = document.getElementById('reg-link')?.value     || 'https://uwaterloo.ca1.qualtrics.com/jfe/form/SV_6zETBrnVsJ5qhbE';
+  const signoff     = document.getElementById('signoff-names')?.value || 'Hana and Amy';
+  const contactEmail= document.getElementById('contact-email')?.value || 'soar@uwaterloo.ca';
+  const firstName   = abstract.name.split(' ')[0];
+  const isAccepted  = dec.status === 'accepted';
+  const isRejected  = dec.status === 'rejected';
+  const isWaitlist  = dec.status === 'waitlist';
+
   let subject, statusLine;
   if (isAccepted) {
-    subject = `SoAR 2026 — Abstract Acceptance: ${abstract.title}`;
-    statusLine = `ABSTRACT ACCEPTANCE\nWe are pleased to notify you that your abstract was accepted as a ${dec.finalFormat} for SoAR 2026.`;
+    subject     = `SoAR 2026 — Abstract Acceptance: ${abstract.title}`;
+    statusLine  = `ABSTRACT ACCEPTANCE\nWe are pleased to notify you that your abstract was accepted as a ${dec.finalFormat} for SoAR 2026.`;
   } else if (isRejected) {
-    subject = `SoAR 2026 — Abstract Decision: ${abstract.title}`;
-    statusLine = `ABSTRACT DECISION\nThank you for your submission to SoAR 2026. After careful review, we regret to inform you that we are unable to include your abstract in this year's program. We encourage you to stay connected with SoAR for future opportunities.`;
+    subject     = `SoAR 2026 — Abstract Decision: ${abstract.title}`;
+    statusLine  = `ABSTRACT DECISION\nThank you for your submission to SoAR 2026. After careful review, we regret to inform you that we are unable to include your abstract in this year's program.`;
   } else if (isWaitlist) {
-    subject = `SoAR 2026 — Abstract Waitlist: ${abstract.title}`;
-    statusLine = `ABSTRACT WAITLIST\nYour abstract has been placed on the waitlist for SoAR 2026. We will notify you of any changes to your status as soon as possible.`;
+    subject     = `SoAR 2026 — Abstract Waitlist: ${abstract.title}`;
+    statusLine  = `ABSTRACT WAITLIST\nYour abstract has been placed on the waitlist for SoAR 2026. We will notify you of any changes to your status as soon as possible.`;
   } else {
-    subject = `SoAR 2026 — Abstract Review Update: ${abstract.title}`;
-    statusLine = `ABSTRACT STATUS — PENDING\nYour abstract is currently under review. You will receive a final notification soon.`;
+    subject     = `SoAR 2026 — Abstract Review Update: ${abstract.title}`;
+    statusLine  = `ABSTRACT STATUS — PENDING\nYour abstract is currently under review. You will receive a final notification soon.`;
   }
 
+  // Use AI-summarized feedback if available, fall back to raw
   let feedbackSection = '';
   if (ev && (ev.strengths.length > 0 || ev.improvements.length > 0)) {
+    const summaries = feedbackSummaries[abstract.id];
     feedbackSection = `\n\nFEEDBACK\nYour abstract was blind-reviewed by an interdisciplinary panel of UW peers who provided the following feedback:\n\n`;
-    if (ev.strengths.length > 0) {
-      feedbackSection += `Strengths:\n${ev.strengths.map((s, i) => `Reviewer ${i + 1}: ${s}`).join('\n')}\n\n`;
+    if (summaries?.strengths?.length > 0) {
+      feedbackSection += `Strengths:\n${summaries.strengths.map(s=>`• ${s}`).join('\n')}\n\n`;
+    } else if (ev.strengths.length > 0) {
+      feedbackSection += `Strengths:\n${ev.strengths.map((s,i)=>`Reviewer ${i+1}: ${s}`).join('\n')}\n\n`;
     }
-    if (ev.improvements.length > 0) {
-      feedbackSection += `Areas for Improvement:\n${ev.improvements.map((s, i) => `Reviewer ${i + 1}: ${s}`).join('\n')}`;
+    if (summaries?.improvements?.length > 0) {
+      feedbackSection += `Areas for Improvement:\n${summaries.improvements.map(s=>`• ${s}`).join('\n')}`;
+    } else if (ev.improvements.length > 0) {
+      feedbackSection += `Areas for Improvement:\n${ev.improvements.map((s,i)=>`Reviewer ${i+1}: ${s}`).join('\n')}`;
     }
   }
 
-  const nextSteps = isAccepted ? `\n\nSCHEDULE & NEXT STEPS\nSoAR will be held in-person on ${confDate}. We will reach out mid-April with information regarding your scheduling. We ask that you submit your PowerPoint slides (or other electronic visual aids) no later than ${slideDeadline} to ${contactEmail}. You may also reply to this email.\n\nALL PRESENTERS MUST REGISTER FOR SOAR. Please see the link below:\n${regLink}\n\nCongratulations and we look forward to seeing you at SoAR!` : '';
+  const nextSteps = isAccepted ? `\n\nSCHEDULE & NEXT STEPS\nSoAR will be held in-person on ${confDate}. We will reach out mid-April with information regarding your scheduling. We ask that you submit your PowerPoint slides (or other electronic visual aids) no later than ${slideDeadline} to ${contactEmail}.\n\nALL PRESENTERS MUST REGISTER FOR SOAR. Please see the link below:\n${regLink}\n\nCongratulations and we look forward to seeing you at SoAR!` : '';
 
   return {
     subject,
@@ -1198,10 +1349,8 @@ ${isAccepted || isWaitlist ? `\nYou are responsible for notifying the SoAR plann
 ${nextSteps}
 
 Sincerely,
-
 ${signoff}
 SoAR Programming
-
 The SoAR planning team | ${contactEmail}
 Symposium on Aging Research (SoAR): An interdisciplinary forum on aging research
 University of Waterloo | 200 University Avenue West | Waterloo, ON, Canada N2L 3G1`
@@ -1212,17 +1361,12 @@ function previewEmail(idx) {
   if (abstracts.length === 0) return;
   const a = abstracts[Math.min(idx, abstracts.length - 1)];
   const email = buildEmail(a);
-  
   document.getElementById('email-preview-box').textContent = email.body;
-  
   document.getElementById('email-modal').classList.add('open');
   document.getElementById('modal-email-content').textContent = `TO: ${a.email}\nSUBJECT: ${email.subject}\n\n${email.body}`;
 }
 
-function closeModal() {
-  document.getElementById('email-modal').classList.remove('open');
-}
-
+function closeModal() { document.getElementById('email-modal').classList.remove('open'); }
 function copyEmailToClipboard() {
   const content = document.getElementById('modal-email-content').textContent;
   navigator.clipboard.writeText(content).then(() => alert('Email copied to clipboard!'));
@@ -1230,49 +1374,34 @@ function copyEmailToClipboard() {
 
 function generateAllEmails() {
   if (abstracts.length === 0) { alert('No abstracts loaded.'); return; }
-  
   let output = '';
   abstracts.forEach(a => {
     const email = buildEmail(a);
     output += `${'='.repeat(70)}\nTO: ${a.email}\nSUBJECT: ${email.subject}\n${'='.repeat(70)}\n${email.body}\n\n\n`;
   });
-
-  const blob = new Blob([output], { type: 'text/plain' });
+  const blob = new Blob([output], { type:'text/plain' });
   const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = 'SoAR_2026_Author_Emails.txt';
-  link.click();
+  const link = document.createElement('a'); link.href=url; link.download='SoAR_2026_Author_Emails.txt'; link.click();
 }
 
 function exportEvalSummary() {
   if (abstracts.length === 0) { alert('No abstracts loaded.'); return; }
-  
-  const rows = [['Abstract ID', 'Title', 'Author', 'Email', 'Requested Format', 'Avg Relevance', 'Avg Methodology', 'Avg Clarity', 'Avg Results', 'Avg Novelty', 'Overall Avg', 'Decision', 'Final Format']];
-  
+  const rows = [['Abstract ID','Title','Author','Email','Requested Format','Avg Relevance','Avg Methodology','Avg Clarity','Avg Results','Avg Novelty','Overall Avg','Decision','Final Format']];
   abstracts.forEach(a => {
-    const ev = getEvalForAbstract(a.id);
+    const ev  = getEvalForAbstract(a.id);
     const dec = decisions[a.id] || {};
-    rows.push([
-      a.id, a.title, a.name, a.email, a.prefType,
-      ev ? ev.relevance.toFixed(2) : '',
-      ev ? ev.methodology.toFixed(2) : '',
-      ev ? ev.clarity.toFixed(2) : '',
-      ev ? ev.results.toFixed(2) : '',
-      ev ? ev.novelty.toFixed(2) : '',
-      ev ? ev.avgScore.toFixed(2) : '',
-      dec.status || 'pending',
-      dec.finalFormat || a.prefType
-    ]);
+    rows.push([a.id,a.title,a.name,a.email,a.prefType,
+      ev?ev.relevance.toFixed(2):'', ev?ev.methodology.toFixed(2):'',
+      ev?ev.clarity.toFixed(2):'',  ev?ev.results.toFixed(2):'',
+      ev?ev.novelty.toFixed(2):'',  ev?ev.avgScore.toFixed(2):'',
+      dec.status||'pending', dec.finalFormat||a.prefType]);
   });
-
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet(rows);
   XLSX.utils.book_append_sheet(wb, ws, 'Evaluation Summary');
   XLSX.writeFile(wb, 'SoAR_2026_Evaluation_Summary.xlsx');
 }
 
-// Close modal on overlay click
 document.getElementById('email-modal').addEventListener('click', function(e) {
   if (e.target === this) closeModal();
 });
