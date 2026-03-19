@@ -338,15 +338,12 @@
       <div class="card">
         <h3 style="font-size:0.9rem;margin-bottom:0.8rem">Oral Presentation Settings</h3>
         <div class="form-group"><label>Duration per oral (min)</label><input type="text" id="sched-oral-dur" value="10" style="width:100%"></div>
-        <div class="form-group"><label>Session 1 Start (oral)</label><input type="text" id="sched-oral1-start" value="09:15" style="width:100%"></div>
-        <div class="form-group"><label>Session 2 Start (oral)</label><input type="text" id="sched-oral2-start" value="11:30" style="width:100%"></div>
-        <div class="form-group"><label>Session 3 Start (oral)</label><input type="text" id="sched-oral3-start" value="15:30" style="width:100%"></div>
+        <div class="form-group" style="background:#EFF6FF;border:1px solid #BFDBFE;border-radius:6px;padding:0.6rem 0.8rem;font-size:0.82rem;color:#1E40AF">Sessions start times are calculated automatically from the session durations and the alternating schedule.</div>
       </div>
       <div class="card">
         <h3 style="font-size:0.9rem;margin-bottom:0.8rem">Rapid Fire Settings</h3>
         <div class="form-group"><label>Duration per rapid (min)</label><input type="text" id="sched-rapid-dur" value="5" style="width:100%"></div>
-        <div class="form-group"><label>Session 1 Start (rapid)</label><input type="text" id="sched-rapid1-start" value="10:45" style="width:100%"></div>
-        <div class="form-group"><label>Session 2 Start (rapid)</label><input type="text" id="sched-rapid2-start" value="14:15" style="width:100%"></div>
+        <div class="form-group" style="background:#FEF3C7;border:1px solid #FDE68A;border-radius:6px;padding:0.6rem 0.8rem;font-size:0.82rem;color:#92400E">Rapid-fire sessions are sized to ~45 min each and placed automatically between oral sessions.</div>
       </div>
     </div>
 
@@ -500,13 +497,25 @@ function loadAbstracts(file) {
   reader.readAsArrayBuffer(file);
 }
 
-function getTypeTag(type) {
-  if (!type) return '<span class="tag tag-other">—</span>';
+function classifyType(type) {
+  // Must run BEFORE generic oral check — rapid-length oral presentations
+  // come from both the submission form and the evaluation form with these strings:
+  //   Submission:  "Oral presentation (rapid length - 3-5 minutes)"
+  //   Evaluation:  "Oral Presentation (Rapid Length - 5 minutes)"
+  if (!type) return 'other';
   const t = type.toLowerCase();
-  if (t.includes('oral') || t.includes('standard')) return `<span class="tag tag-oral">Oral</span>`;
-  if (t.includes('poster')) return `<span class="tag tag-poster">Poster</span>`;
-  if (t.includes('rapid')) return `<span class="tag tag-rapid">Rapid Fire</span>`;
-  return `<span class="tag tag-other">${type}</span>`;
+  if (t.includes('rapid')) return 'rapid';           // catches both forms above
+  if (t.includes('poster')) return 'poster';
+  if (t.includes('oral') || t.includes('standard')) return 'oral';  // standard oral only
+  return 'other';
+}
+
+function getTypeTag(type) {
+  const kind = classifyType(type);
+  if (kind === 'oral')   return `<span class="tag tag-oral">Oral (10 min)</span>`;
+  if (kind === 'poster') return `<span class="tag tag-poster">Poster</span>`;
+  if (kind === 'rapid')  return `<span class="tag tag-rapid">Rapid Fire (5 min)</span>`;
+  return `<span class="tag tag-other">${type || '—'}</span>`;
 }
 
 function renderAbstracts() {
@@ -719,18 +728,18 @@ function updateStats() {
   document.getElementById('stat-reviewed').textContent= reviewed;
 }
 
-const isOral   = t => (t||'').toLowerCase().includes('oral')  || (t||'').toLowerCase().includes('standard');
-const isPoster = t => (t||'').toLowerCase().includes('poster');
-const isRapid  = t => (t||'').toLowerCase().includes('rapid');
+const isOral   = t => classifyType(t) === 'oral';
+const isPoster = t => classifyType(t) === 'poster';
+const isRapid  = t => classifyType(t) === 'rapid';
 
 function updateDashboard() {
   updateStats();
   const typeCounts = { Oral: 0, Poster: 0, 'Rapid Fire': 0, Other: 0 };
   abstracts.forEach(a => {
-    const t = (a.prefType || '').toLowerCase();
-    if (t.includes('oral') || t.includes('standard')) typeCounts.Oral++;
-    else if (t.includes('poster')) typeCounts.Poster++;
-    else if (t.includes('rapid')) typeCounts['Rapid Fire']++;
+    const kind = classifyType(a.prefType);
+    if (kind === 'oral')   typeCounts.Oral++;
+    else if (kind === 'poster') typeCounts.Poster++;
+    else if (kind === 'rapid')  typeCounts['Rapid Fire']++;
     else typeCounts.Other++;
   });
   if (chartTypes) chartTypes.destroy();
@@ -787,24 +796,8 @@ function applyBulkDecision() {
 }
 
 // ============================================================
-// SCHEDULE BUILDER
+// SCHEDULE BUILDER — dynamic alternating oral/rapid structure
 // ============================================================
-
-// Fixed programme structure (times as minutes from midnight)
-const PROGRAMME = [
-  { key:'reg',        label:'Registration & Poster Set-Up', type:'special',  start: 8*60+30, end: 9*60,     location:'EXP Foyer' },
-  { key:'opening',    label:'Opening Remarks',              type:'special',  start: 9*60,    end: 9*60+15,  location:'EXP 1689 (Auditorium)' },
-  { key:'oral1',      label:'Oral Presentations — Session 1',type:'oral',    start: 9*60+15, end:10*60+30,  location:'EXP 1689 (Auditorium)' },
-  { key:'break1',     label:'Break',                        type:'break',    start:10*60+30, end:10*60+45,  location:'' },
-  { key:'rapid1',     label:'Rapid-Fire Presentations — Session 1',type:'rapid', start:10*60+45,end:11*60+30, location:'EXP 1689 (Auditorium)' },
-  { key:'oral2',      label:'Oral Presentations — Session 2',type:'oral',    start:11*60+30, end:12*60+30,  location:'EXP 1689 (Auditorium)' },
-  { key:'lunch',      label:'Lunch',                        type:'break',    start:12*60+30, end:13*60+15,  location:'' },
-  { key:'keynote',    label:'Keynote Speaker',              type:'special',  start:13*60+15, end:14*60+15,  location:'EXP 1689 (Auditorium)' },
-  { key:'rapid2',     label:'Rapid-Fire Presentations — Session 2',type:'rapid', start:14*60+15,end:15*60,  location:'EXP 1689 (Auditorium)' },
-  { key:'break2',     label:'Extended Break + Poster Viewing',type:'poster', start:15*60,    end:15*60+30,  location:'EXP Foyer' },
-  { key:'oral3',      label:'Oral Presentations — Session 3',type:'oral',    start:15*60+30, end:16*60+50,  location:'EXP 1689 (Auditorium)' },
-  { key:'closing',    label:'Closing Remarks & Awards',     type:'special',  start:16*60+50, end:17*60,     location:'EXP 1689 (Auditorium)' },
-];
 
 function minsToTime(m) {
   const h = Math.floor(m / 60), min = m % 60;
@@ -813,112 +806,202 @@ function minsToTime(m) {
   return `${h12}:${String(min).padStart(2,'0')} ${ampm}`;
 }
 
+// Split an array into chunks of at most `max` each, as evenly as possible
+function splitEvenly(list, max) {
+  if (list.length === 0) return [];
+  const numChunks = Math.ceil(list.length / max);
+  const base = Math.floor(list.length / numChunks);
+  const extra = list.length % numChunks;
+  const chunks = [];
+  let i = 0;
+  for (let c = 0; c < numChunks; c++) {
+    const size = base + (c < extra ? 1 : 0);
+    chunks.push(list.slice(i, i + size));
+    i += size;
+  }
+  return chunks;
+}
+
+// Split rapid list into ~45-min blocks at given duration per talk
+function splitRapid(list, dur) {
+  if (list.length === 0) return [];
+  const perBlock = Math.floor(45 / dur) || 1;
+  return splitEvenly(list, perBlock);
+}
+
 function buildSchedule() {
   if (abstracts.length === 0) { alert('Load abstracts first.'); return; }
 
-  const accepted = abstracts.filter(a => decisions[a.id]?.status === 'accepted');
-  const oralList   = accepted.filter(a => isOral(decisions[a.id]?.finalFormat || a.prefType));
-  const rapidList  = accepted.filter(a => isRapid(decisions[a.id]?.finalFormat || a.prefType));
-  const posterList = accepted.filter(a => isPoster(decisions[a.id]?.finalFormat || a.prefType));
+  const accepted  = abstracts.filter(a => decisions[a.id]?.status === 'accepted');
+  const oralList  = accepted.filter(a => isOral(decisions[a.id]?.finalFormat  || a.prefType));
+  const rapidList = accepted.filter(a => isRapid(decisions[a.id]?.finalFormat || a.prefType));
+  const posterList= accepted.filter(a => isPoster(decisions[a.id]?.finalFormat|| a.prefType));
 
-  // If nothing is accepted yet, use all abstracts by preference (preview mode)
-  const oralFinal   = oralList.length   > 0 ? oralList   : abstracts.filter(a => isOral(a.prefType));
-  const rapidFinal  = rapidList.length  > 0 ? rapidList  : abstracts.filter(a => isRapid(a.prefType));
-  const posterFinal = posterList.length > 0 ? posterList : abstracts.filter(a => isPoster(a.prefType));
+  // Preview mode — use all submitted if none accepted yet
+  const oralFinal  = oralList.length  > 0 ? oralList  : abstracts.filter(a => isOral(a.prefType));
+  const rapidFinal = rapidList.length > 0 ? rapidList : abstracts.filter(a => isRapid(a.prefType));
+  const posterFinal= posterList.length> 0 ? posterList: abstracts.filter(a => isPoster(a.prefType));
 
   const oralDur  = parseInt(document.getElementById('sched-oral-dur').value)  || 10;
   const rapidDur = parseInt(document.getElementById('sched-rapid-dur').value) || 5;
 
-  // Distribute oral into 3 sessions, rapid into 2
-  function distribute(list, sizes) {
-    const chunks = [];
-    let idx = 0;
-    for (let s of sizes) {
-      chunks.push(list.slice(idx, idx + s)); idx += s;
-    }
-    return chunks;
-  }
+  // Max 6 oral per block; rapid in ~45-min blocks
+  const oralChunks  = splitEvenly(oralFinal,  6);
+  const rapidChunks = splitRapid(rapidFinal, rapidDur);
 
-  const totalOral  = oralFinal.length;
-  const totalRapid = rapidFinal.length;
+  // Build session objects — key them as oral1/oral2/… rapid1/rapid2/…
+  const sessions = {};
+  oralChunks.forEach((chunk, i)  => { sessions[`oral${i+1}`]  = { list:chunk, dur:oralDur,  type:'oral',  label:`Oral Presentations — Session ${i+1}`,      num:i+1 }; });
+  rapidChunks.forEach((chunk, i) => { sessions[`rapid${i+1}`] = { list:chunk, dur:rapidDur, type:'rapid', label:`Rapid-Fire Presentations — Session ${i+1}`, num:i+1 }; });
 
-  // Oral split: roughly 7 / 6 / 8 (but adapt)
-  const o1 = Math.ceil(totalOral / 3);
-  const o2 = Math.ceil((totalOral - o1) / 2);
-  const o3 = totalOral - o1 - o2;
-  const oralSessions = distribute(oralFinal, [o1, o2, o3]);
+  scheduleData = { sessions, poster: posterFinal, oralDur, rapidDur, oralChunks, rapidChunks };
 
-  const r1 = Math.ceil(totalRapid / 2);
-  const r2 = totalRapid - r1;
-  const rapidSessions = distribute(rapidFinal, [r1, r2]);
-
-  scheduleData = {
-    oral1:  oralSessions[0]  || [],
-    oral2:  oralSessions[1]  || [],
-    oral3:  oralSessions[2]  || [],
-    rapid1: rapidSessions[0] || [],
-    rapid2: rapidSessions[1] || [],
-    poster: posterFinal,
-    oralDur, rapidDur
-  };
+  // Rebuild dynamic programme from scratch
+  scheduleData.programme = buildProgramme(oralChunks, rapidChunks, oralDur, rapidDur);
 
   document.getElementById('analyze-themes-btn').style.display = 'inline-flex';
   document.getElementById('schedule-stats').style.display = 'block';
-
   renderSchedule();
+}
+
+// Dynamically constructs the day timeline:
+//   Registration → Opening → [alternating oral/rapid blocks with 15-min breaks]
+//   → Lunch → Keynote → [continue alternating] → Poster break → Closing
+function buildProgramme(oralChunks, rapidChunks, oralDur, rapidDur) {
+  const BREAK_DUR  = 15;
+  const LUNCH_DUR  = 45;
+  const KEYNOTE_DUR= 60;
+  const POSTER_BREAK_DUR = 30;
+  const CLOSING_DUR= 10;
+
+  const prog = [];
+  let cursor = 8*60 + 30;   // 8:30 a.m.
+
+  const push = (slot) => { prog.push(slot); cursor = slot.end; };
+
+  push({ key:'reg',     label:'Registration & Poster Set-Up', type:'special', start:cursor, end:cursor+30, location:'EXP Foyer' });
+  push({ key:'opening', label:'Opening Remarks',              type:'special', start:cursor, end:cursor+15, location:'EXP 1689 (Auditorium)' });
+
+  // Interleave oral and rapid blocks, separating each with a 15-min break.
+  // Strategy: alternate oral → rapid → oral → rapid …
+  // Lunch inserted after we pass ~12:00 (or after ~3 blocks, whichever comes first).
+  // Keynote follows lunch. Poster-viewing break after all presentations.
+
+  const oralQ  = [...oralChunks.map((_,i) => `oral${i+1}`)];
+  const rapidQ = [...rapidChunks.map((_,i) => `rapid${i+1}`)];
+  let lunchInserted  = false;
+  let keynoteInserted= false;
+  let useOral = true;   // start with oral
+
+  // We alternate until both queues are empty
+  while (oralQ.length > 0 || rapidQ.length > 0) {
+
+    // Insert lunch once we cross midday and haven't yet
+    if (!lunchInserted && cursor >= 12*60) {
+      push({ key:'lunch', label:'Lunch', type:'break', start:cursor, end:cursor+LUNCH_DUR, location:'' });
+      lunchInserted = true;
+      // Keynote right after lunch
+      push({ key:'keynote', label:'Keynote Speaker', type:'special', start:cursor, end:cursor+KEYNOTE_DUR, location:'EXP 1689 (Auditorium)' });
+      keynoteInserted = true;
+      useOral = true; // restart alternation after keynote
+    }
+
+    // Pick next queue based on alternation; skip if empty
+    let key = null;
+    if (useOral && oralQ.length > 0)       { key = oralQ.shift();  useOral = false; }
+    else if (!useOral && rapidQ.length > 0) { key = rapidQ.shift(); useOral = true;  }
+    else if (oralQ.length > 0)              { key = oralQ.shift();  useOral = false; }
+    else if (rapidQ.length > 0)             { key = rapidQ.shift(); useOral = true;  }
+
+    if (!key) break;
+
+    const sessType  = key.startsWith('oral') ? 'oral' : 'rapid';
+    const chunk     = sessType === 'oral' ? oralChunks[parseInt(key.replace('oral',''))-1] : rapidChunks[parseInt(key.replace('rapid',''))-1];
+    const dur       = sessType === 'oral' ? oralDur : rapidDur;
+    const sessDur   = chunk.length * dur;
+    const sessLabel = sessType === 'oral'
+      ? `Oral Presentations — Session ${key.replace('oral','')}`
+      : `Rapid-Fire Presentations — Session ${key.replace('rapid','')}`;
+
+    push({ key, label:sessLabel, type:sessType, start:cursor, end:cursor+sessDur, location:'EXP 1689 (Auditorium)' });
+
+    // Break after every session (except if it's the very last one before closing)
+    const moreLeft = oralQ.length + rapidQ.length > 0;
+    if (moreLeft) {
+      // Extended poster-viewing break once after midday keynote for a natural
+      // pause; otherwise a regular short break
+      const isPostKeynote = keynoteInserted && prog.filter(p=>p.type==='break'&&p.key!=='lunch').length === 0;
+      if (isPostKeynote) {
+        push({ key:'posterbreak', label:'Extended Break + Poster Viewing', type:'poster', start:cursor, end:cursor+POSTER_BREAK_DUR, location:'EXP Foyer' });
+      } else {
+        const breakNum = prog.filter(p=>p.key.startsWith('break')).length + 1;
+        push({ key:`break${breakNum}`, label:'Break', type:'break', start:cursor, end:cursor+BREAK_DUR, location:'' });
+      }
+    }
+  }
+
+  // If lunch/keynote never fired (very short day), add them at end before closing
+  if (!lunchInserted) {
+    push({ key:'lunch',   label:'Lunch',           type:'break',   start:cursor, end:cursor+LUNCH_DUR,   location:'' });
+    push({ key:'keynote', label:'Keynote Speaker',  type:'special', start:cursor, end:cursor+KEYNOTE_DUR, location:'EXP 1689 (Auditorium)' });
+  }
+
+  push({ key:'closing', label:'Closing Remarks & Awards', type:'special', start:cursor, end:cursor+CLOSING_DUR, location:'EXP 1689 (Auditorium)' });
+
+  return prog;
 }
 
 function renderSchedule() {
   if (!scheduleData) return;
-  const { oral1, oral2, oral3, rapid1, rapid2, poster, oralDur, rapidDur } = scheduleData;
-  const venue = document.getElementById('sched-venue').value;
+  const { sessions, poster, oralDur, rapidDur, oralChunks, rapidChunks, programme } = scheduleData;
+  const venue       = document.getElementById('sched-venue').value;
   const posterVenue = document.getElementById('sched-poster-venue').value;
 
-  // Stat row
-  document.getElementById('schedule-stat-row').innerHTML = [
-    `<div class="sched-stat">🎤 Oral: <strong>${oral1.length + oral2.length + oral3.length}</strong></div>`,
-    `<div class="sched-stat">⚡ Rapid: <strong>${rapid1.length + rapid2.length}</strong></div>`,
-    `<div class="sched-stat">🖼️ Poster: <strong>${poster.length}</strong></div>`,
-    `<div class="sched-stat">Total Presentations: <strong>${oral1.length+oral2.length+oral3.length+rapid1.length+rapid2.length+poster.length}</strong></div>`
-  ].join('');
+  const totalOral  = oralChunks.reduce((s,c)=>s+c.length, 0);
+  const totalRapid = rapidChunks.reduce((s,c)=>s+c.length, 0);
 
-  const sessionMap = {
-    oral1:  { list: oral1,  dur: oralDur,  type:'oral',  idx:1 },
-    oral2:  { list: oral2,  dur: oralDur,  type:'oral',  idx:2 },
-    oral3:  { list: oral3,  dur: oralDur,  type:'oral',  idx:3 },
-    rapid1: { list: rapid1, dur: rapidDur, type:'rapid', idx:1 },
-    rapid2: { list: rapid2, dur: rapidDur, type:'rapid', idx:2 },
-  };
+  document.getElementById('schedule-stat-row').innerHTML = [
+    `<div class="sched-stat">🎤 Oral sessions: <strong>${oralChunks.length}</strong> (${totalOral} talks)</div>`,
+    `<div class="sched-stat">⚡ Rapid sessions: <strong>${rapidChunks.length}</strong> (${totalRapid} talks)</div>`,
+    `<div class="sched-stat">🖼️ Posters: <strong>${poster.length}</strong></div>`,
+    `<div class="sched-stat">Total presentations: <strong>${totalOral+totalRapid+poster.length}</strong></div>`,
+  ].join('');
 
   const out = document.getElementById('schedule-output');
   let html = '';
 
-  for (const slot of PROGRAMME) {
+  for (const slot of programme) {
+    const isFixed = ['reg','opening','lunch','keynote','closing'].includes(slot.key) || slot.key.startsWith('break') || slot.key === 'posterbreak';
     const blockClass = `schedule-block block-${slot.type}`;
-    const locStr = slot.location || (slot.type==='oral'||slot.type==='rapid' ? venue : slot.type==='poster'?posterVenue:'');
+    const locStr  = slot.location || (['oral','rapid'].includes(slot.type) ? venue : slot.type==='poster'?posterVenue:'');
     const locHtml = locStr ? `<div class="location-label">📍 ${locStr}</div>` : '';
+    const durMins = slot.end - slot.start;
 
-    if (['reg','opening','break1','break2','lunch','keynote','closing'].includes(slot.key)) {
+    if (isFixed) {
       html += `<div class="${blockClass}">
-        <div class="schedule-time"><span>${minsToTime(slot.start)}</span><span>–</span><span>${minsToTime(slot.end)}</span><span class="duration">${slot.end-slot.start} min</span></div>
+        <div class="schedule-time">
+          <span>${minsToTime(slot.start)}</span><span>–</span><span>${minsToTime(slot.end)}</span>
+          <span class="duration">${durMins} min</span>
+        </div>
         <div class="schedule-body"><div class="event-label">${slot.label}</div>${locHtml}</div>
       </div>`;
       continue;
     }
 
-    const sess = sessionMap[slot.key];
+    // Presentation session block
+    const sess = sessions[slot.key];
     if (!sess) continue;
 
     const theme = abstractThemes[slot.key] || null;
     const themeBadge = theme
-      ? `<div class="theme-badge ${theme.multi ? 'multi' : ''}">🏷️ ${theme.label}</div>`
+      ? `<div class="theme-badge ${theme.multi?'multi':''}">🏷️ ${theme.label}${theme.multi && theme.alternateThemes ? ' · '+theme.alternateThemes.join(' / ') : ''}</div>`
       : `<div style="font-size:0.78rem;color:var(--muted);margin-bottom:0.5rem">Theme: <em>not yet analyzed</em> — click "Analyze Themes with AI"</div>`;
 
     let presHtml = '';
-    let cursor = slot.start;
+    let cursor   = slot.start;
     sess.list.forEach((a, i) => {
       const presEnd = cursor + sess.dur;
-      presHtml += `<div class="presentation-row" draggable="true" data-session="${slot.key}" data-idx="${i}"
+      presHtml += `<div class="presentation-row" draggable="true"
           ondragstart="dragStart(event,'${slot.key}',${i})"
           ondragover="dragOverRow(event)"
           ondrop="dropRow(event,'${slot.key}',${i})"
@@ -927,16 +1010,18 @@ function renderSchedule() {
         <span class="pres-num ${sess.type==='rapid'?'rapid-num':''}">${a.id}</span>
         <div class="pres-info">
           <div class="pres-title">${a.title || '(Untitled)'}</div>
-          <div class="pres-author">${a.name}${a.affiliation ? ' · '+a.affiliation : ''}</div>
+          <div class="pres-author">${a.name}${a.affiliation?' · '+a.affiliation:''}</div>
           <div class="pres-time">${minsToTime(cursor)} – ${minsToTime(presEnd)}</div>
         </div>
       </div>`;
       cursor = presEnd;
     });
 
-    const totalDur = sess.list.length * sess.dur;
     html += `<div class="${blockClass}">
-      <div class="schedule-time"><span>${minsToTime(slot.start)}</span><span>–</span><span>${minsToTime(slot.end)}</span><span class="duration">${sess.list.length} pres · ${totalDur} min</span></div>
+      <div class="schedule-time">
+        <span>${minsToTime(slot.start)}</span><span>–</span><span>${minsToTime(slot.end)}</span>
+        <span class="duration">${sess.list.length} pres · ${durMins} min</span>
+      </div>
       <div class="schedule-body">
         <div class="event-label">${slot.label}</div>
         ${locHtml}
@@ -946,14 +1031,14 @@ function renderSchedule() {
     </div>`;
   }
 
-  // Poster block (separate at-a-glance)
+  // Poster roster at the bottom
   if (poster.length > 0) {
-    const posterHtml = poster.map((a,i) => `
+    const posterHtml = poster.map(a => `
       <div class="presentation-row">
         <span class="pres-num poster-num">${a.id}</span>
         <div class="pres-info">
           <div class="pres-title">${a.title || '(Untitled)'}</div>
-          <div class="pres-author">${a.name}${a.affiliation ? ' · '+a.affiliation : ''}</div>
+          <div class="pres-author">${a.name}${a.affiliation?' · '+a.affiliation:''}</div>
         </div>
       </div>`).join('');
     html += `<div class="schedule-block block-poster" style="margin-top:1.5rem">
@@ -973,7 +1058,7 @@ function dragLeaveRow(e) { e.currentTarget.classList.remove('drag-over-row'); }
 function dropRow(e, session, idx) {
   e.preventDefault(); e.currentTarget.classList.remove('drag-over-row');
   if (!dragSrc || dragSrc.session !== session || dragSrc.idx === idx) return;
-  const list = scheduleData[session];
+  const list = scheduleData.sessions[session].list;
   const item = list.splice(dragSrc.idx, 1)[0];
   list.splice(idx, 0, item);
   renderSchedule();
@@ -987,14 +1072,10 @@ async function analyzeThemes() {
   const btn = document.getElementById('analyze-themes-btn');
   btn.disabled = true; btn.textContent = '⏳ Analyzing…';
 
-  const sessionKeys = ['oral1','oral2','oral3','rapid1','rapid2'];
-  const sessionMap = {
-    oral1: scheduleData.oral1, oral2: scheduleData.oral2, oral3: scheduleData.oral3,
-    rapid1: scheduleData.rapid1, rapid2: scheduleData.rapid2
-  };
+  const sessionKeys = Object.keys(scheduleData.sessions);
 
   for (const key of sessionKeys) {
-    const list = sessionMap[key];
+    const list = scheduleData.sessions[key].list;
     if (!list || list.length === 0) { abstractThemes[key] = { label:'No Presentations', multi:false }; continue; }
 
     const abstracts_text = list.map(a => `Title: ${a.title}\nAbstract: ${(a.abstract||'').slice(0,300)}`).join('\n\n---\n\n');
@@ -1047,28 +1128,23 @@ No preamble, no markdown, just the JSON object.`
 function exportSchedule() {
   if (!scheduleData) { alert('Generate schedule first.'); return; }
   const rows = [['Time', 'Event', 'Location', 'Abstract ID', 'Presenter', 'Title', 'Theme']];
-  const { oral1, oral2, oral3, rapid1, rapid2, poster, oralDur, rapidDur } = scheduleData;
-  const sessionMap = {
-    oral1:{ list:oral1, dur:oralDur }, oral2:{ list:oral2, dur:oralDur },
-    oral3:{ list:oral3, dur:oralDur }, rapid1:{ list:rapid1, dur:rapidDur }, rapid2:{ list:rapid2, dur:rapidDur }
-  };
-
-  for (const slot of PROGRAMME) {
-    if (['reg','opening','break1','break2','lunch','keynote','closing'].includes(slot.key)) {
-      rows.push([`${minsToTime(slot.start)} – ${minsToTime(slot.end)}`, slot.label, slot.location||'', '','','','']);
+  const { sessions, poster, programme } = scheduleData;
+  const isFixed = k => ['reg','opening','lunch','keynote','closing'].includes(k) || k.startsWith('break') || k === 'posterbreak';
+  for (const slot of programme) {
+    if (isFixed(slot.key)) {
+      rows.push([minsToTime(slot.start)+' – '+minsToTime(slot.end), slot.label, slot.location||'', '','','','']);
       continue;
     }
-    const sess = sessionMap[slot.key];
+    const sess = sessions[slot.key];
     if (!sess) continue;
     const theme = abstractThemes[slot.key]?.label || '';
     let cursor = slot.start;
     sess.list.forEach(a => {
-      rows.push([`${minsToTime(cursor)} – ${minsToTime(cursor+sess.dur)}`, slot.label, slot.location||'', a.id, a.name, a.title, theme]);
+      rows.push([minsToTime(cursor)+' – '+minsToTime(cursor+sess.dur), slot.label, slot.location||'', a.id, a.name, a.title, theme]);
       cursor += sess.dur;
     });
   }
   poster.forEach(a => rows.push(['All Day', 'Poster Session', document.getElementById('sched-poster-venue').value, a.id, a.name, a.title, '']));
-
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.aoa_to_sheet(rows);
   ws['!cols'] = [{wch:22},{wch:40},{wch:25},{wch:8},{wch:25},{wch:50},{wch:30}];
@@ -1078,39 +1154,25 @@ function exportSchedule() {
 
 function exportScheduleWord() {
   if (!scheduleData) { alert('Generate schedule first.'); return; }
-  const { oral1, oral2, oral3, rapid1, rapid2, poster, oralDur, rapidDur } = scheduleData;
-  const sessionMap = {
-    oral1:{ list:oral1, dur:oralDur }, oral2:{ list:oral2, dur:oralDur },
-    oral3:{ list:oral3, dur:oralDur }, rapid1:{ list:rapid1, dur:rapidDur }, rapid2:{ list:rapid2, dur:rapidDur }
-  };
+  const { sessions, poster, programme } = scheduleData;
+  const isFixed = k => ['reg','opening','lunch','keynote','closing'].includes(k) || k.startsWith('break') || k === 'posterbreak';
   let rows = '';
-  for (const slot of PROGRAMME) {
-    if (['reg','opening','break1','break2','lunch','keynote','closing'].includes(slot.key)) {
-      rows += `<tr style="background:#f0f4f8"><td><b>${minsToTime(slot.start)} – ${minsToTime(slot.end)}</b></td><td colspan="4"><b>${slot.label}</b>${slot.location?'<br><span style="color:#555;font-size:9pt">'+slot.location+'</span>':''}</td></tr>`;
+  for (const slot of programme) {
+    if (isFixed(slot.key)) {
+      rows += '<tr style="background:#f0f4f8"><td><b>'+minsToTime(slot.start)+' – '+minsToTime(slot.end)+'</b></td><td colspan="4"><b>'+slot.label+'</b>'+(slot.location?'<br><span style="color:#555;font-size:9pt">'+slot.location+'</span>':'')+'</td></tr>';
       continue;
     }
-    const sess = sessionMap[slot.key];
+    const sess = sessions[slot.key];
     if (!sess) continue;
     const theme = abstractThemes[slot.key];
-    rows += `<tr style="background:#EFF6FF"><td colspan="5"><b>${slot.label}</b>${theme?'  <span style="color:#1E40AF;font-size:9pt">— '+theme.label+'</span>':''}</td></tr>`;
+    rows += '<tr style="background:#EFF6FF"><td colspan="5"><b>'+slot.label+'</b>'+(theme?'  <span style="color:#1E40AF;font-size:9pt">— '+theme.label+'</span>':'')+'</td></tr>';
     let cursor = slot.start;
     sess.list.forEach(a => {
-      rows += `<tr><td style="font-size:9pt;white-space:nowrap">${minsToTime(cursor)} – ${minsToTime(cursor+sess.dur)}</td><td style="font-size:9pt">${a.id}</td><td>${a.title||'(Untitled)'}</td><td>${a.name}</td><td style="font-size:9pt">${a.affiliation||''}</td></tr>`;
+      rows += '<tr><td style="font-size:9pt;white-space:nowrap">'+minsToTime(cursor)+' – '+minsToTime(cursor+sess.dur)+'</td><td style="font-size:9pt">'+a.id+'</td><td>'+(a.title||'(Untitled)')+'</td><td>'+a.name+'</td><td style="font-size:9pt">'+(a.affiliation||'')+'</td></tr>';
       cursor += sess.dur;
     });
   }
-  const body = `<html xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="UTF-8">
-    <style>
-      @page{margin:1.5cm} body{font-family:Calibri,sans-serif;font-size:11pt}
-      h1{font-family:Georgia,serif;color:#1A2744;text-align:center;font-size:16pt}
-      table{width:100%;border-collapse:collapse;font-size:10pt}
-      th{background:#1A2744;color:white;padding:6pt 8pt;font-size:9pt}
-      td{padding:5pt 8pt;border-bottom:1pt solid #ddd;vertical-align:top}
-    </style></head><body>
-    <h1>SoAR 2026 — Conference Schedule</h1>
-    <p style="text-align:center;color:#555;font-size:10pt;margin-bottom:16pt">Symposium on Aging Research · University of Waterloo · ${document.getElementById('sched-date').value}</p>
-    <table><thead><tr><th>Time</th><th>ID</th><th>Title</th><th>Presenter</th><th>Affiliation</th></tr></thead><tbody>${rows}</tbody></table>
-  </body></html>`;
+  const body = '<html xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="UTF-8"><style>@page{margin:1.5cm} body{font-family:Calibri,sans-serif;font-size:11pt} h1{font-family:Georgia,serif;color:#1A2744;text-align:center;font-size:16pt} table{width:100%;border-collapse:collapse;font-size:10pt} th{background:#1A2744;color:white;padding:6pt 8pt;font-size:9pt} td{padding:5pt 8pt;border-bottom:1pt solid #ddd;vertical-align:top}</style></head><body><h1>SoAR 2026 — Conference Schedule</h1><p style="text-align:center;color:#555;font-size:10pt;margin-bottom:16pt">Symposium on Aging Research · University of Waterloo · '+document.getElementById('sched-date').value+'</p><table><thead><tr><th>Time</th><th>ID</th><th>Title</th><th>Presenter</th><th>Affiliation</th></tr></thead><tbody>'+rows+'</tbody></table></body></html>';
   const blob = new Blob([body], { type:'application/msword' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href=url; a.download='SoAR_2026_Schedule.doc'; a.click();
